@@ -5,7 +5,7 @@ namespace MapProject.WebUI.Services.VisitorLogService
 {
     public class VisitorLogService : IVisitorLogService
     {
-        private const string BaseUrl = "https://localhost:5000";
+        private const string BaseUrl = "https://reart-map-project-api.onrender.com";
         private readonly HttpClient _httpClient;
 
         public VisitorLogService(HttpClient httpClient)

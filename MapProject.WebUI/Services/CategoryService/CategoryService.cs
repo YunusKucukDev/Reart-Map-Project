@@ -6,7 +6,7 @@ namespace MapProject.WebUI.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {
-        private string BaseUrl = "https://localhost:5000";
+        private string BaseUrl = "https://reart-map-project-api.onrender.com";
         private readonly HttpClient _httpClient;
 
         public CategoryService(HttpClient httpClient)

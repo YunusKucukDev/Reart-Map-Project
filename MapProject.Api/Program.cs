@@ -28,6 +28,13 @@ var databaseSettings = builder.Configuration.GetSection("DatabaseSettings").Get<
 builder.Services.AddSingleton<MongoDB.Driver.IMongoClient>(sp =>
     new MongoDB.Driver.MongoClient(databaseSettings.ConnectionString));
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    });
+});
 
 // MongoDB Identity
 builder.Services.AddIdentity<AppUser, AppRole>()
@@ -81,7 +88,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 

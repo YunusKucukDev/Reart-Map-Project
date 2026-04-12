@@ -6,7 +6,7 @@ namespace MapProject.WebUI.Services.MapIdentityDescriptionService
 {
     public class MapIdentityDescriptionService : IMapIdentityDescriptionService
     {
-        private readonly string BaseUrl = "https://localhost:5000";
+        private readonly string BaseUrl = "https://reart-map-project-api.onrender.com";
         private readonly HttpClient _httpClient;
 
         public MapIdentityDescriptionService(HttpClient httpClient)
