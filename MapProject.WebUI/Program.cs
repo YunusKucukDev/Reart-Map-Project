@@ -11,14 +11,16 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 1. Temel Servisler
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<VisitorTracker>();
+
+// 2. Email Ayarlarý
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<IEmailService, EmailService>();
 
-builder.Services.AddSignalR();
-builder.Services.AddSingleton<VisitorTracker>();
-builder.Services.AddHttpClient<IVisitorLogService, VisitorLogService>();
-
+// 3. Kimlik Doðrulama (Cookie) Ayarlarý
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -26,19 +28,25 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Login/Logout";
         options.AccessDeniedPath = "/Login/Index";
         options.ExpireTimeSpan = TimeSpan.FromDays(30);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.Name = "MapProject.Cookie";
     });
 
-builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt => {
-    opt.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
-});
+// 4. API Baðlantý Ayarlarý (HttpClient Factory)
+// appsettings.json dosyanýzdaki "ApiSettings:BaseUrl" deðerini okur.
+var apiUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
 
-builder.Services.AddHttpClient<IContactService, ContactService>();
-builder.Services.AddHttpClient<IMapIdentityDescriptionService, MapIdentityDescriptionService>();
-builder.Services.AddHttpClient<IUserInformationService, UserInformationService>();
-builder.Services.AddHttpClient<IIdentityService, IdentityService>();
+builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt => opt.BaseAddress = apiUri);
+builder.Services.AddHttpClient<IContactService, ContactService>(opt => opt.BaseAddress = apiUri);
+builder.Services.AddHttpClient<IMapIdentityDescriptionService, MapIdentityDescriptionService>(opt => opt.BaseAddress = apiUri);
+builder.Services.AddHttpClient<IUserInformationService, UserInformationService>(opt => opt.BaseAddress = apiUri);
+builder.Services.AddHttpClient<IIdentityService, IdentityService>(opt => opt.BaseAddress = apiUri);
+builder.Services.AddHttpClient<IVisitorLogService, VisitorLogService>(opt => opt.BaseAddress = apiUri);
 
+// 5. Uygulama Oluþturma
 var app = builder.Build();
 
+// 6. Middleware (Ara Yazýlým) Yapýlandýrmasý
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -47,10 +55,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
+// Önce Authentication (Kimlik Doðrulama), Sonra Authorization (Yetkilendirme)
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 7. Hub ve Route Tanýmlamalarý
 app.MapHub<VisitorHub>("/visitorHub");
 
 app.MapControllerRoute(
