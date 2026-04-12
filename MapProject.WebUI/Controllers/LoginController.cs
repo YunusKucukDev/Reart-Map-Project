@@ -20,8 +20,9 @@ namespace MapProject.WebUI.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            // Eğer zaten giriş yapmışsa Admin paneline gönder
             if (User.Identity?.IsAuthenticated == true)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "AdminDashboard", new { area = "Admin" });
 
             return View();
         }
@@ -37,36 +38,43 @@ namespace MapProject.WebUI.Controllers
             {
                 result = await _identityService.Login(loginDto);
             }
-            catch (HttpRequestException)
+            catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Sunucuya bağlanılamadı. Lütfen birkaç saniye bekleyip tekrar deneyin.");
-                return View(loginDto);
-            }
-            catch (TaskCanceledException)
-            {
-                ModelState.AddModelError(string.Empty, "Sunucu yanıt vermiyor, lütfen tekrar deneyin.");
+                // Bağlantı hatası durumunda detaylı bilgi veriyoruz
+                ModelState.AddModelError(string.Empty, $"Bağlantı Hatası: {ex.Message}");
                 return View(loginDto);
             }
 
-            if (result == null)
+            // API'den null dönüyorsa (Kullanıcı adı/şifre yanlış veya URL hatalı)
+            if (result == null || string.IsNullOrEmpty(result.Token))
             {
-                ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre hatalı.");
+                ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre hatalı ya da sunucu yetki vermedi.");
                 return View(loginDto);
             }
 
+            // Başarılı giriş: Claim'leri oluştur
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, result.Name ?? string.Empty),
-                new Claim("Token", result.Token ?? string.Empty)
+                new Claim(ClaimTypes.Name, result.Name ?? result.Name ?? "User"),
+                new Claim("Token", result.Token)
             };
+
+            // Eğer API'den Roller geliyorsa onları da ekle (Yetki hatalarını önlemek için)
+            // if (result.Roles != null) { foreach(var role in result.Roles) claims.Add(new Claim(ClaimTypes.Role, role)); }
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
-                new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30) });
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
+            };
 
-            return RedirectToAction("Index", "Home");
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
+
+            // Başarılı giriş sonrası Admin Dashboard'a yönlendir
+            return RedirectToAction("Index", "AdminDashboard", new { area = "Admin" });
         }
 
         public async Task<IActionResult> Logout()
