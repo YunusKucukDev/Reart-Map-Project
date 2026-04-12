@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+        body { background-color: #f0f2f5; }
+        .sidebar { width: 250px; min-height: 100vh; background: #1e293b; position: fixed; top: 0; left: 0; z-index: 100; display: flex; flex-direction: column; padding: 0; }
+        .sidebar-brand { padding: 1.2rem 1.5rem; border-bottom: 1px solid #334155; color: #fff; font-size: 1.1rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .sidebar-brand:hover { color: #94a3b8; }
+        .sidebar-nav { padding: 1rem 0.75rem; flex: 1; }
+        .sidebar-nav .nav-link { color: #94a3b8; border-radius: 0.4rem; padding: 0.6rem 0.9rem; margin-bottom: 0.15rem; font-size: 0.9rem; transition: all 0.15s; display: flex; align-items: center; gap: 0.6rem; }
+        .sidebar-nav .nav-link:hover { color: #fff; background: #334155; }
+        .sidebar-nav .nav-link.active { color: #fff; background: #3b82f6; }
+        .sidebar-nav .nav-section { color: #475569; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.9rem 0.9rem 0.3rem; }
+        .sidebar-footer { padding: 1rem 0.75rem; border-top: 1px solid #334155; }
+        .sidebar-footer .nav-link { color: #94a3b8; border-radius: 0.4rem; padding: 0.6rem 0.9rem; font-size: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+        .sidebar-footer .nav-link:hover { color: #fff; background: #334155; }
+        .main-wrapper { margin-left: 250px; display: flex; flex-direction: column; min-height: 100vh; }
+        .topbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+        .topbar-title { font-weight: 600; color: #1e293b; font-size: 1rem; margin: 0; }
+        .topbar-user { font-size: 0.85rem; color: #64748b; display: flex; align-items: center; gap: 0.4rem; }
+        .page-content { padding: 1.75rem; flex: 1; }
+        .card { border: none; border-radius: 0.6rem; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+        .card-header { background: #fff; border-bottom: 1px solid #f1f5f9; padding: 1rem 1.25rem; font-weight: 600; font-size: 0.92rem; color: #1e293b; }
+        .stat-card { border-radius: 0.6rem; padding: 1.25rem; color: #fff; border: none; }
+        .table thead th { background: #f8fafc; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; border-bottom: 1px solid #e2e8f0; }
+        .table td { vertical-align: middle; font-size: 0.88rem; }
+        .btn-sm { font-size: 0.78rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a class="sidebar-brand" asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">
+            <i class="bi bi-shield-check"></i> Admin Panel
+        </a>
+
+        <nav class="sidebar-nav">
+            <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "Dashboard" ? "active" : "")"
+               asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "Category" ? "active" : "")"
+               asp-area="Admin" asp-controller="AdminCategory" asp-action="Index">
+                <i class="bi bi-grid-3x3-gap"></i> Kategoriler
+            </a>
+            <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "MapIdentity" ? "active" : "")"
+               asp-area="Admin" asp-controller="AdminMapIdentityDescription" asp-action="Index">
+                <i class="bi bi-map"></i> Harita Tanımı
+            </a>
+            <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "Contact" ? "active" : "")"
+               asp-area="Admin" asp-controller="AdminContact" asp-action="Index">
+                <i class="bi bi-envelope"></i> Mesajlar
+            </a>
+            <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "UserInformation" ? "active" : "")"
+               asp-area="Admin" asp-controller="AdminUserInformation" asp-action="Index">
+                <i class="bi bi-person-badge"></i> Firma Bilgileri
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-house"></i> Siteye Dön
+            </a>
+            <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Logout">
+                <i class="bi bi-box-arrow-left"></i> Çıkış Yap
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-wrapper">
+        <div class="topbar">
+            <h6 class="topbar-title">@ViewData["Title"]</h6>
+            <div class="topbar-user">
+                <i class="bi bi-person-circle"></i>
+                @User.Identity?.Name
+            </div>
+        </div>
+
+        <div class="page-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

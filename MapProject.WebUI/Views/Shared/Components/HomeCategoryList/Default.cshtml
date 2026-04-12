@@ -1,0 +1,51 @@
+﻿@using MapProject.DtoLayer.DTOs.CategoryDto
+@model List<ResultCategoryDto>
+
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5" style="max-width: 500px;">
+            <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">ReArt Ajans</h5>
+            <h1 class="display-4">Harita Kategorileri</h1>
+        </div>
+
+        <div class="owl-carousel team-carousel position-relative">
+            @foreach (var item in Model)
+            {
+                <div class="team-item">
+                    <a asp-controller="Category" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        <div class="row g-0 bg-light rounded overflow-hidden shadow-sm" style="transition: transform 0.3s ease; cursor: pointer;">
+                            <div class="col-12 col-sm-5 h-100">
+                                <img class="img-fluid h-100" src="@item.ImageUrl1" style="object-fit: cover; min-height: 300px;">
+                            </div>
+                            <div class="col-12 col-sm-7 h-100 d-flex flex-column">
+                                <div class="mt-auto p-4">
+                                    <h3 class="text-primary">@item.CategoryName</h3>
+                                    <p style="overflow-wrap: break-word; word-wrap: break-word; white-space: normal; text-align: justify; display: block; width: 100%;">
+                                        @item.Description
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-end mt-auto p-3">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-5">
+            <a asp-controller="Category" asp-action="Index" class="btn btn-outline-primary rounded-pill py-3 px-5">
+                <h5 class="d-inline-block text-primary text-uppercase mb-0">Tüm Kategorileri Gör</h5>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Kart üzerine gelince hafif büyüme efekti (opsiyonel) */
+    .team-item a:hover .row {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>

@@ -1,0 +1,172 @@
+@model ResultMapIdentityDescriptionDto
+@{
+    ViewData["Title"] = "Harita Tanımı Güncelleme";
+    ViewData["ActiveMenu"] = "MapIdentity";
+    string apiBase = "https://localhost:3000";
+
+    string ResolvePath(string? path)
+    {
+        if (string.IsNullOrEmpty(path)) return "";
+        return path.StartsWith("http") ? path : apiBase + path;
+    }
+}
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4">@ViewData["Title"]</h2>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active">Harita Tanımı</li>
+    </ol>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form asp-area="Admin" asp-controller="AdminMapIdentityDescription" asp-action="Update"
+          method="post" enctype="multipart/form-data">
+
+        <input type="hidden" name="Id" value="@Model?.Id" />
+        <input type="hidden" name="ImageUrl1" value="@Model?.ImageUrl1" />
+        <input type="hidden" name="ImageUrl2" value="@Model?.ImageUrl2" />
+        <input type="hidden" name="ImageUrl3" value="@Model?.ImageUrl3" />
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="bi bi-pencil-square me-2"></i>Harita Tanımını Düzenle
+                        </h6>
+                    </div>
+                    <div class="card-body border">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">Deneyim Sayısı</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-award"></i></span>
+                                    <input name="Experincenumber" value="@Model?.Experincenumber" class="form-control" placeholder="örn: 15+" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">Proje Sayısı</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-folder2-open"></i></span>
+                                    <input name="Projectnumber" value="@Model?.Projectnumber" class="form-control" placeholder="örn: 200+" required />
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-medium">Açıklama 1</label>
+                                <textarea name="Description1" class="form-control" rows="2">@Model?.Description1</textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-medium">Açıklama 2</label>
+                                <textarea name="Description2" class="form-control" rows="2">@Model?.Description2</textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-medium">Açıklama 3</label>
+                                <textarea name="Description3" class="form-control" rows="2">@Model?.Description3</textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                                <i class="bi bi-save me-2"></i>Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3 border">
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-images me-2 text-primary"></i>Görsel Yönetimi</h6>
+                    </div>
+                    <div class="card-body border">
+                        @for (int i = 1; i <= 3; i++)
+                        {
+                            var currentImg = i == 1 ? Model?.ImageUrl1 : (i == 2 ? Model?.ImageUrl2 : Model?.ImageUrl3);
+                            var fullPath = ResolvePath(currentImg);
+
+                            <div class="mb-4 p-3 border rounded bg-light">
+                                <label class="form-label fw-bold small text-uppercase">Görsel @i</label>
+                                <div class="img-slot mb-2" id="slot@(i)">
+                                    <img id="prev@(i)" src="@fullPath" class="slot-img @(string.IsNullOrEmpty(fullPath) ? "d-none" : "")" />
+                                    <div id="ph@(i)" class="slot-placeholder @(!string.IsNullOrEmpty(fullPath) ? "d-none" : "")"
+                                         onclick="document.getElementById('file@(i)').click()">
+                                        <i class="bi bi-camera fs-2 text-muted"></i>
+                                    </div>
+                                </div>
+                                <input type="file" id="file@(i)" name="file@(i)" accept="image/*" class="d-none"
+                                       onchange="previewSlot(this, 'prev@(i)', 'ph@(i)')" />
+                                <button type="button" class="btn btn-outline-dark btn-sm w-100" onclick="document.getElementById('file@(i)').click()">
+                                    <i class="bi bi-upload me-1"></i> Görseli Değiştir
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <style>
+        .img-slot {
+            height: 160px;
+            background: #fff;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .slot-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slot-placeholder {
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .slot-placeholder:hover {
+                background: #f1f5f9;
+            }
+    </style>
+    <script>
+        function previewSlot(input, imgId, phId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById(imgId);
+                    img.src = e.target.result;
+                    img.classList.remove('d-none');
+                    document.getElementById(phId).classList.add('d-none');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

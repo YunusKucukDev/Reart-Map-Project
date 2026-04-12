@@ -1,0 +1,518 @@
+@using MapProject.DtoLayer.DTOs.CategoryDto
+@model UpdateCategoryDto
+@{
+    Layout = "~/Views/UI/Index.cshtml";
+    ViewData["Title"] = Model?.CategoryName ?? "Kategori Detayı";
+}
+
+<style>
+    /* ===== HERO SECTION ===== */
+    .detail-hero {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--dark) 60%, #0a1628 100%);
+        padding: 80px 0 60px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .detail-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(19,197,221,0.15) 0%, transparent 70%);
+            animation: pulse-bg 6s ease-in-out infinite;
+        }
+
+        .detail-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(53,79,142,0.3) 0%, transparent 70%);
+            animation: pulse-bg 8s ease-in-out infinite reverse;
+        }
+
+    @@keyframes pulse-bg {
+        0%, 100% { transform: scale(1); opacity: 0.6; }
+        50%       { transform: scale(1.2); opacity: 1; }
+    }
+
+    .breadcrumb-item a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: .3s;
+    }
+        .breadcrumb-item a:hover { color: #fff; }
+    .breadcrumb-item.active { color: rgba(255,255,255,0.7); }
+    .breadcrumb-item + .breadcrumb-item::before { color: rgba(255,255,255,0.4); }
+
+    /* ===== DETAIL CARD ===== */
+    .detail-card {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 8px 40px rgba(29,42,77,0.10);
+        overflow: hidden;
+    }
+
+    /* ===== IMAGE GALLERY ===== */
+    .gallery-main {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+        box-shadow: 0 8px 30px rgba(19,197,221,0.18);
+        cursor: pointer;
+    }
+
+        .gallery-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-main:hover img {
+            transform: scale(1.05);
+        }
+
+    .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(29,42,77,0.55) 0%, transparent 60%);
+    }
+
+    .gallery-zoom-btn {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: rgba(255,255,255,0.18);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+        .gallery-zoom-btn:hover { background: var(--primary); border-color: var(--primary); }
+
+    .gallery-thumbs {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .gallery-thumb {
+        flex: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        aspect-ratio: 4/3;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border-color 0.3s, transform 0.3s;
+    }
+        .gallery-thumb:hover, .gallery-thumb.active {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .img-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #EFF5F9 0%, #dce8f0 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #adb5bd;
+        font-size: 48px;
+    }
+
+    /* ===== CONTENT ===== */
+    .detail-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--primary), #0fa8bf);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 5px 18px;
+        border-radius: 30px;
+        margin-bottom: 14px;
+    }
+
+    .detail-title {
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        font-weight: 800;
+        color: var(--dark);
+        line-height: 1.2;
+        margin-bottom: 18px;
+    }
+
+    .detail-desc {
+        font-size: 16px;
+        line-height: 1.85;
+        color: #555;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+    }
+
+    .favorite-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 5px 16px;
+        border-radius: 30px;
+        box-shadow: 0 3px 12px rgba(238,90,36,0.35);
+        animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    @@keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        15%       { transform: scale(1.08); }
+        30%       { transform: scale(1); }
+        45%       { transform: scale(1.04); }
+    }
+
+    /* ===== INFO CHIPS ===== */
+    .info-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .info-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f0fafc;
+        border: 1px solid #d0eff4;
+        color: var(--dark);
+        font-size: 13px;
+        font-weight: 600;
+        padding: 7px 16px;
+        border-radius: 30px;
+    }
+        .info-chip i { color: var(--primary); }
+
+    /* ===== DIVIDER ===== */
+    .section-divider {
+        border: none;
+        border-top: 2px solid #f0f4f8;
+        margin: 28px 0;
+    }
+
+    /* ===== BACK BUTTON ===== */
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        border-radius: 30px;
+        padding: 9px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+        .btn-back:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateX(-4px);
+        }
+
+    .btn-explore {
+        background: linear-gradient(135deg, var(--primary), #0fa8bf);
+        color: #fff;
+        border: none;
+        border-radius: 30px;
+        padding: 10px 28px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+        .btn-explore::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+            transition: left 0.4s ease;
+        }
+        .btn-explore:hover::before { left: 100%; }
+        .btn-explore:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(19,197,221,0.45);
+            color: #fff;
+        }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(10,15,30,0.92);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(8px);
+    }
+        .lightbox-overlay.active { display: flex; }
+
+    .lightbox-img {
+        max-width: 90vw;
+        max-height: 85vh;
+        border-radius: 16px;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+        animation: lb-in 0.3s ease;
+    }
+
+    @@keyframes lb-in {
+        from { opacity: 0; transform: scale(0.88); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: 24px;
+        right: 28px;
+        background: rgba(255,255,255,0.12);
+        border: none;
+        color: #fff;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s;
+    }
+        .lightbox-close:hover { background: var(--primary); }
+
+    /* ===== FADE IN ===== */
+    .fade-up {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+        .fade-up.in { opacity: 1; transform: translateY(0); }
+</style>
+
+<!-- ===== HERO ===== -->
+<div class="detail-hero">
+    <div class="container" style="position: relative; z-index: 1;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-3">
+                <li class="breadcrumb-item">
+                    <a asp-controller="Home" asp-action="Index"><i class="fas fa-home me-1"></i>Ana Sayfa</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-controller="Category" asp-action="Index">Kategoriler</a>
+                </li>
+                <li class="breadcrumb-item active">@Model?.CategoryName</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <h1 class="text-white fw-bold mb-0" style="font-size: clamp(1.6rem,5vw,2.8rem);">
+                @Model?.CategoryName
+            </h1>
+            @if (Model?.IsFavorite == true)
+            {
+                <span class="favorite-pill"><i class="fas fa-heart"></i> Favori</span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div class="container-fluid py-5" style="background: #f8fbfd;">
+    <div class="container">
+        @if (Model == null)
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-map-marked-alt fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">Kategori bulunamadı.</h4>
+                <a asp-controller="Category" asp-action="Index" class="btn-back mt-3">
+                    <i class="fas fa-arrow-left"></i> Kategorilere Dön
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-5 align-items-start">
+
+                <!-- LEFT: Gallery -->
+                <div class="col-lg-6 fade-up">
+                    @{
+                        var images = new[] { Model.ImageUrl1, Model.ImageUrl2, Model.ImageUrl3 }
+                                     .Where(u => !string.IsNullOrEmpty(u))
+                                     .ToList();
+                        var mainImg = images.FirstOrDefault();
+                    }
+
+                    <!-- Main image -->
+                    <div class="gallery-main" onclick="openLightbox('@mainImg')" id="mainImgWrap">
+                        @if (!string.IsNullOrEmpty(mainImg))
+                        {
+                            <img id="mainImg" src="@mainImg" alt="@Model.CategoryName" />
+                        }
+                        else
+                        {
+                            <div class="img-placeholder"><i class="fas fa-map"></i></div>
+                        }
+                        <div class="gallery-overlay"></div>
+                        <button class="gallery-zoom-btn" onclick="event.stopPropagation(); openLightbox(document.getElementById('mainImg')?.src)">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+
+                    <!-- Thumbnails -->
+                    @if (images.Count > 1)
+                    {
+                        <div class="gallery-thumbs">
+                            @for (int i = 0; i < images.Count; i++)
+                            {
+                                <div class="gallery-thumb @(i == 0 ? "active" : "")"
+                                     onclick="switchImage('@images[i]', this)">
+                                    <img src="@images[i]" alt="Görsel @(i+1)"
+                                         onerror="this.parentElement.style.display='none'" />
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- RIGHT: Info -->
+                <div class="col-lg-6 fade-up" style="transition-delay: 150ms;">
+                    <div class="detail-badge">
+                        <i class="fas fa-layer-group me-1"></i> Kategori Detayı
+                    </div>
+
+                    <h2 class="detail-title">@Model.CategoryName</h2>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        <p class="detail-desc">@Model.Description</p>
+                    }
+
+                    <!-- Info chips -->
+                    <div class="info-chips">
+                        <div class="info-chip">
+                            <i class="fas fa-images"></i>
+                            @images.Count Görsel
+                        </div>
+                        <div class="info-chip">
+                            <i class="fas fa-map-marked-alt"></i>
+                            Harita Kategorisi
+                        </div>
+                        @if (Model.IsFavorite)
+                        {
+                            <div class="info-chip" style="background:#fff5f5; border-color:#ffd0d0;">
+                                <i class="fas fa-heart" style="color:#ee5a24;"></i>
+                                Favori Kategori
+                            </div>
+                        }
+                    </div>
+
+                    <hr class="section-divider" />
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-3 flex-wrap align-items-center">
+                        <a asp-controller="Category" asp-action="Index" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Tüm Kategoriler
+                        </a>
+                        @if (!string.IsNullOrEmpty(mainImg))
+                        {
+                            <button class="btn-explore" onclick="openLightbox('@mainImg')">
+                                <i class="fas fa-search-plus"></i> Görseli Büyüt
+                            </button>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+<!-- ===== LIGHTBOX ===== -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">
+        <i class="fas fa-times"></i>
+    </button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="Büyük Görsel" onclick="event.stopPropagation()" />
+</div>
+
+<script>
+    // ===== Fade-up on scroll =====
+    function checkFade() {
+        document.querySelectorAll('.fade-up').forEach(el => {
+            if (el.getBoundingClientRect().top < window.innerHeight - 60) {
+                el.classList.add('in');
+            }
+        });
+    }
+    window.addEventListener('scroll', checkFade);
+    window.addEventListener('load', () => setTimeout(checkFade, 100));
+
+    // ===== Thumbnail switch =====
+    function switchImage(url, thumbEl) {
+        const mainImg = document.getElementById('mainImg');
+        const mainWrap = document.getElementById('mainImgWrap');
+
+        if (mainImg) {
+            mainImg.src = url;
+            mainWrap.onclick = () => openLightbox(url);
+        }
+
+        document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+        thumbEl.classList.add('active');
+    }
+
+    // ===== Lightbox =====
+    function openLightbox(src) {
+        if (!src) return;
+        document.getElementById('lightboxImg').src = src;
+        document.getElementById('lightbox').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>

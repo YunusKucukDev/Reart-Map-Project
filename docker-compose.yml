@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: MapProject.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+    restart: unless-stopped
+    networks:
+      - mapproject-net
+
+  webui:
+    build:
+      context: .
+      dockerfile: MapProject.WebUI/Dockerfile
+    ports:
+      - "80:8080"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - mapproject-net
+
+networks:
+  mapproject-net:
+    driver: bridge

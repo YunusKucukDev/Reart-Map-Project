@@ -1,0 +1,53 @@
+﻿@using MapProject.DtoLayer.DTOs.ContactDto
+@model CreateContactDto
+
+<div class="container-fluid bg-primary my-3 py-5">
+    <div class="container py-5">
+        <div class="row gx-5">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="mb-4">
+                    <h5 class="d-inline-block text-white text-uppercase border-bottom border-5">ReArt Ajans</h5>
+                    <h1 class="display-4 text-white">Sizin Rotanız, Bizim Sanatımız</h1>
+                    <p class="text-white fs-5 mt-3">Her büyük proje bir soruyla başlar. Hayalinizdeki haritayı çizmek, verilerinizi sanata dönüştürmek veya markanızı konumlandırmak için doğru adrestesiniz.</p>
+                    <div class="d-flex align-items-center mt-4">
+                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa fa-map-marked-alt text-primary fs-3"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="text-white mb-0">Harekete Geçin</h5>
+                            <p class="text-white mb-0">Fikirlerinizi birlikte projelendirelim.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="bg-white text-center rounded p-5">
+                    <h1 class="mb-4">Bize Ulaşın</h1>
+                    <form asp-controller="Contact" asp-action="SendMessage" method="post">
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <input asp-for="UserName" type="text" class="form-control bg-light border-0" placeholder="İsminiz"
+                                       style="height: 55px;">
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <input asp-for="UserEmail" type="email" class="form-control bg-light border-0" placeholder="E-posta Adresiniz"
+                                       style="height: 55px;">
+                            </div>
+
+                            <div class="col-12">
+                                <textarea asp-for="Message" class="form-control bg-light border-0" rows="5" placeholder="Mesajınız"
+                                          style="padding: 15px;"></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <button class="btn btn-primary w-100 py-3" type="submit">
+                                    Gönder
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+﻿@using MapProject.DtoLayer.DTOs.UserInformationDto
+@model ResultUserInformationDto
+
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row gx-5">
+            <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
+                <div class="position-relative h-100">
+                    <img class="position-absolute w-100 h-100 rounded" src="@Model.Image"
+                         style="object-fit: cover;">
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="mb-4">
+                    <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">Reart Ajans</h5>
+                    <h1 class="display-4">@Model.Title</h1>
+                </div>
+                <p style="overflow-wrap: break-word; word-wrap: break-word; white-space: normal; text-align: justify;">
+                    @Model.Description
+                </p>
+                <div class="row g-3 pt-3">
+                    <div class="col-sm-3 col-6">
+                        <div class="bg-light text-center rounded-circle py-4">
+                            <i class="fa-solid fa-3x text-primary mb-3 fa-tags" style="color: rgb(116, 192, 252);"></i>
+                            <h6 class="mb-0">Uygun Fiyat</h6>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-6">
+                        <div class="bg-light text-center rounded-circle py-4">
+                            <i class="fa-solid fa-3x text-primary mb-3 fa-user-shield" style="color: rgb(116, 192, 252);"></i>
+                            <h6 class="mb-0">Müşteri Memnuniyeti</h6>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-6">
+                        <div class="bg-light text-center rounded-circle py-4">
+                            <i class="fa-solid fa-3x text-primary mb-3 fa-print" style="color: rgb(116, 192, 252);"></i>
+                            <h6 class="mb-0">Kaliteli Baskı</h6>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-6">
+                        <div class="bg-light text-center rounded-circle py-4">
+                            <i class="fa-solid fa-3x text-primary mb-3 fa-pen-nib" style="color: rgb(116, 192, 252);"></i>
+                            <h6 class="mb-0">Özel Tasarım</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

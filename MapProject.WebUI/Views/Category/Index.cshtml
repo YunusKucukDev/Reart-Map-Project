@@ -1,0 +1,599 @@
+@using MapProject.DtoLayer.DTOs.CategoryDto
+@model List<ResultCategoryDto>
+@{
+    Layout = "~/Views/UI/Index.cshtml";
+    ViewData["Title"] = "Kategoriler";
+}
+
+<style>
+    /* ===== PAGE HEADER ===== */
+    .category-page-header {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--dark) 60%, #0a1628 100%);
+        padding: 80px 0 60px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .category-page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(19,197,221,0.15) 0%, transparent 70%);
+            animation: pulse-bg 6s ease-in-out infinite;
+        }
+
+        .category-page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(53,79,142,0.3) 0%, transparent 70%);
+            animation: pulse-bg 8s ease-in-out infinite reverse;
+        }
+
+    @@keyframes pulse-bg {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.6;
+        }
+
+        50% {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+    }
+
+    .breadcrumb-item a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: .3s;
+    }
+
+        .breadcrumb-item a:hover {
+            color: #fff;
+        }
+
+    .breadcrumb-item.active {
+        color: rgba(255,255,255,0.7);
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255,255,255,0.4);
+    }
+
+    /* ===== SECTION TITLE ===== */
+    .section-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--primary), #0fa8bf);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 20px;
+        border-radius: 30px;
+        margin-bottom: 16px;
+    }
+
+    /* ===== CATEGORY CARD ===== */
+    .category-card-wrapper {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+        .category-card-wrapper.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    .category-card-link {
+        text-decoration: none;
+        display: block;
+        height: 100%;
+        color: inherit;
+    }
+
+    .category-card {
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 6px 30px rgba(29, 42, 77, 0.10);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+        .category-card:hover {
+            transform: translateY(-14px) scale(1.02);
+            box-shadow: 0 32px 70px rgba(19, 197, 221, 0.28);
+        }
+
+    /* Card Image */
+    .category-card-img {
+        position: relative;
+        overflow: hidden;
+        height: 280px;
+    }
+
+        .category-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+    .category-card:hover .category-card-img img {
+        transform: scale(1.1);
+    }
+
+    .category-card-img-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, transparent 20%, rgba(14, 24, 50, 0.82) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        display: flex;
+        align-items: flex-end;
+        padding: 28px;
+    }
+
+    .category-card:hover .category-card-img-overlay {
+        opacity: 1;
+    }
+
+    .overlay-arrow {
+        width: 48px;
+        height: 48px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 18px;
+        margin-left: auto;
+        transform: translateY(10px);
+        transition: transform 0.4s ease;
+        box-shadow: 0 6px 20px rgba(19,197,221,0.5);
+    }
+
+    .category-card:hover .overlay-arrow {
+        transform: translateY(0);
+    }
+
+    /* Favorite badge */
+    .favorite-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 5px 14px;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 3px 10px rgba(238,90,36,0.4);
+        animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    @@keyframes heartbeat {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        15% {
+            transform: scale(1.1);
+        }
+
+        30% {
+            transform: scale(1);
+        }
+
+        45% {
+            transform: scale(1.05);
+        }
+    }
+
+    /* Card Icon on image */
+    .card-category-icon {
+        position: absolute;
+        bottom: -24px;
+        left: 28px;
+        width: 54px;
+        height: 54px;
+        background: linear-gradient(135deg, var(--primary), #0fa8bf);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 22px;
+        box-shadow: 0 8px 24px rgba(19,197,221,0.45);
+        transition: transform 0.3s ease;
+        z-index: 2;
+    }
+
+    .category-card:hover .card-category-icon {
+        transform: rotate(10deg) scale(1.1);
+    }
+
+    /* Card Body */
+    .category-card-body {
+        padding: 40px 28px 28px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .category-card-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0;
+        transition: color 0.3s;
+    }
+
+    .category-card:hover .category-card-title {
+        color: var(--primary);
+    }
+
+    /* Card Footer */
+    .category-card-footer {
+        padding: 18px 28px 26px;
+        border-top: 1px solid #f0f4f8;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Card stats (image thumbnails) */
+    .card-thumb-group {
+        display: flex;
+        gap: 5px;
+    }
+
+    .card-thumb {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        transition: transform 0.3s;
+    }
+
+        .card-thumb:hover {
+            transform: scale(1.2);
+        }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+    .empty-state-icon {
+        font-size: 80px;
+        color: #dee2e6;
+        margin-bottom: 20px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px 32px;
+        box-shadow: 0 4px 20px rgba(29,42,77,0.06);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 40px;
+    }
+
+        .stats-bar .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-bar .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), #0fa8bf);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .stats-bar .stat-num {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
+        }
+
+        .stats-bar .stat-label {
+            font-size: 12px;
+            color: #9199a3;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+    /* ===== SEARCH / FILTER BAR ===== */
+    .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+    }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9199a3;
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            padding: 10px 16px 10px 44px;
+            border: 2px solid #e9ecef;
+            border-radius: 30px;
+            font-size: 14px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+
+            .search-input-wrap input:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(19,197,221,0.1);
+            }
+
+    /* ===== LOADING SHIMMER ===== */
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    /* ===== NO IMAGE PLACEHOLDER ===== */
+    .img-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #EFF5F9 0%, #dce8f0 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #adb5bd;
+        font-size: 48px;
+    }
+</style>
+
+
+<!-- Main Content -->
+<div class="container-fluid py-5" style="background: #f8fbfd;">
+    <div class="container">
+
+        <!-- Stats + Filter Bar -->
+        <div class="stats-bar">
+            <div class="d-flex gap-4 flex-wrap">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                    <div>
+                        <div class="stat-label">Toplam Kategori</div>
+                        <div class="stat-num">@Model.Count</div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-bar">
+                <div class="search-input-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="categorySearch" placeholder="Kategori ara..." />
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mb-5">
+            <div class="mb-3">
+                <h5 class="d-inline-block text-primary text-uppercase border-bottom border-3" style="letter-spacing: 1px;">
+                    ReArt Ajans
+                </h5>
+            </div>
+            <h2 class="display-5 fw-bold" style="color: var(--dark);">Tüm Harita Kategorileri</h2>
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-map-marked-alt"></i></div>
+                <h4 class="text-muted">Henüz Kategori Bulunamadı</h4>
+                <p class="text-muted">Yakında yeni kategoriler eklenecek.</p>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary rounded-pill px-5 py-2 mt-2">
+                    <i class="fas fa-arrow-left me-2"></i>Ana Sayfaya Dön
+                </a>
+            </div>
+        }
+        else
+        {
+            <!-- Cards Grid -->
+            <div class="row g-4" id="categoryGrid">
+                @{
+                    int idx = 0;
+                }
+                @foreach (var category in Model)
+                {
+
+                    var delay = (idx % 3) * 150;
+                    idx++;
+                    <div class="col-lg-4 col-md-6 col-sm-12 category-card-wrapper"
+                         data-name="@category.CategoryName.ToLower()"
+                         data-favorite="@category.IsFavorite.ToString().ToLower()"
+                         style="transition-delay: @(delay)ms;">
+                        <a class="category-card-link"
+                           asp-controller="Category"
+                           asp-action="Details"
+                           asp-route-id="@category.Id">
+                            <div class="category-card h-100">
+                                <!-- Image -->
+                                <div class="category-card-img">
+                                    @if (!string.IsNullOrEmpty(category.ImageUrl1))
+                                    {
+                                        <img src="@category.ImageUrl1"
+                                             alt="@category.CategoryName"
+                                             onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><i class=\'fas\'></i></div>'" />
+                                    }
+                                    <div class="category-card-img-overlay">
+                                        <div class="overlay-arrow"><i class="fas fa-arrow-right"></i></div>
+                                    </div>
+                                </div>
+
+                                <!-- Body -->
+                                <div class="category-card-body">
+                                    <h4 class="category-card-title">@category.CategoryName</h4>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="category-card-footer">
+                                    <div class="card-thumb-group">
+                                        @if (!string.IsNullOrEmpty(category.ImageUrl1))
+                                        {
+                                            <img src="@category.ImageUrl1" class="card-thumb" title="Görsel 1"
+                                                 onerror="this.style.display='none'" />
+                                        }
+                                        @if (!string.IsNullOrEmpty(category.ImageUrl2))
+                                        {
+                                            <img src="@category.ImageUrl2" class="card-thumb" title="Görsel 2"
+                                                 onerror="this.style.display='none'" />
+                                        }
+                                        @if (!string.IsNullOrEmpty(category.ImageUrl3))
+                                        {
+                                            <img src="@category.ImageUrl3" class="card-thumb" title="Görsel 3"
+                                                 onerror="this.style.display='none'" />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- No results message -->
+            <div id="noResults" class="empty-state" style="display:none;">
+                <div class="empty-state-icon"><i class="fas fa-search"></i></div>
+                <h5 class="text-muted">Arama sonucu bulunamadı</h5>
+                <p class="text-muted">Farklı bir kelime deneyin.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    // ===== Scroll Animate In =====
+    function checkVisibility() {
+        const cards = document.querySelectorAll('.category-card-wrapper');
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 60) {
+                card.classList.add('animate-in');
+            }
+        });
+    }
+    window.addEventListener('scroll', checkVisibility);
+    window.addEventListener('load', () => setTimeout(checkVisibility, 100));
+
+    // ===== Search Filter =====
+    const searchInput = document.getElementById('categorySearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterCards);
+    }
+
+    // ===== Favorite Filter =====
+    let showFavOnly = false;
+    const btnFav = document.getElementById('filterFavorite');
+    const btnAll = document.getElementById('filterAll');
+
+    if (btnFav) {
+        btnFav.addEventListener('click', () => {
+            showFavOnly = true;
+            btnFav.style.display = 'none';
+            btnAll.style.display = '';
+            filterCards();
+        });
+    }
+    if (btnAll) {
+        btnAll.addEventListener('click', () => {
+            showFavOnly = false;
+            btnAll.style.display = 'none';
+            btnFav.style.display = '';
+            filterCards();
+        });
+    }
+
+    function filterCards() {
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const cards = document.querySelectorAll('.category-card-wrapper');
+        let visible = 0;
+
+        cards.forEach(card => {
+            const name = card.dataset.name || '';
+            const isFav = card.dataset.favorite === 'true';
+
+            const matchSearch = name.includes(query);
+            const matchFav = !showFavOnly || isFav;
+
+            if (matchSearch && matchFav) {
+                card.style.display = '';
+                visible++;
+                // Re-trigger animation
+                card.classList.remove('animate-in');
+                setTimeout(() => card.classList.add('animate-in'), 50);
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const noResults = document.getElementById('noResults');
+        if (noResults) {
+            noResults.style.display = visible === 0 ? '' : 'none';
+        }
+    }
+</script>

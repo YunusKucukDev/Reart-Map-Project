@@ -1,0 +1,124 @@
+@model UpdateCategoryDto
+@{
+    ViewData["Title"] = "Kategori Düzenle";
+    ViewData["ActiveMenu"] = "Category";
+    // API adresini bir değişkene alalım, her yerde kullanması kolay olsun
+    string apiUrl = "https://localhost:3000";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-pencil-square me-2 text-primary"></i>Kategori Düzenle</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-area="Admin" asp-controller="AdminCategory" asp-action="Edit"
+                      method="post" enctype="multipart/form-data">
+                    <input asp-for="Id" type="hidden" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CategoryName" class="form-label fw-bold">Kategori Adı</label>
+                            <input asp-for="CategoryName" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="IsFavorite" class="form-label d-block fw-bold">Durum</label>
+                            <div class="form-check form-switch pt-2">
+                                <input asp-for="IsFavorite" class="form-check-input" type="checkbox" id="favSwitch">
+                                <label class="form-check-label" for="favSwitch">Anasayfada Göster</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-bold">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <hr class="text-muted mb-4" />
+
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label d-block fw-bold">Ana Resim (1)</label>
+                            <div class="image-upload-container">
+                                @* Resim yolunun başına apiUrl ekledik *@
+                                <img src="@(string.IsNullOrEmpty(Model.ImageUrl1) ? "/images/no-image.png" : apiUrl + Model.ImageUrl1)"
+                                     id="preview1" class="img-fluid rounded border mb-2 shadow-sm preview-box" />
+
+                                <input type="file" name="file1" id="file1" class="d-none" accept="image/*" onchange="updatePreview(this, 'preview1')" />
+                                <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="document.getElementById('file1').click()">
+                                    <i class="bi bi-camera me-1"></i> Seç
+                                </button>
+                                <input asp-for="ImageUrl1" type="hidden" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label d-block fw-bold">Görsel (2)</label>
+                            <div class="image-upload-container">
+                                <img src="@(string.IsNullOrEmpty(Model.ImageUrl2) ? "/images/no-image.png" : apiUrl + Model.ImageUrl2)"
+                                     id="preview2" class="img-fluid rounded border mb-2 shadow-sm preview-box" />
+
+                                <input type="file" name="file2" id="file2" class="d-none" accept="image/*" onchange="updatePreview(this, 'preview2')" />
+                                <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="document.getElementById('file2').click()">
+                                    <i class="bi bi-camera me-1"></i> Seç
+                                </button>
+                                <input asp-for="ImageUrl2" type="hidden" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label d-block fw-bold">Görsel (3)</label>
+                            <div class="image-upload-container">
+                                <img src="@(string.IsNullOrEmpty(Model.ImageUrl3) ? "/images/no-image.png" : apiUrl + Model.ImageUrl3)"
+                                     id="preview3" class="img-fluid rounded border mb-2 shadow-sm preview-box" />
+
+                                <input type="file" name="file3" id="file3" class="d-none" accept="image/*" onchange="updatePreview(this, 'preview3')" />
+                                <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="document.getElementById('file3').click()">
+                                    <i class="bi bi-camera me-1"></i> Seç
+                                </button>
+                                <input asp-for="ImageUrl3" type="hidden" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-save me-2"></i>Değişiklikleri Kaydet
+                        </button>
+                        <a asp-action="Index" class="btn btn-light px-4 ms-2 border">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .preview-box {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            background-color: #f8f9fa;
+        }
+
+        .image-upload-container:hover img {
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+    </style>
+
+    <script>
+        function updatePreview(input, previewId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(previewId).setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

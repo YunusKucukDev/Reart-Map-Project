@@ -1,0 +1,95 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    @await Component.InvokeAsync("HeadUILayout")  @*Head Compoenent*@
+</head>  
+
+<body>
+
+    <div class="container-fluid py-2 border-bottom d-none d-lg-block">
+        @await Component.InvokeAsync("TopbarUILayout") @*Topbar*@
+    </div> 
+    
+    <div class="container-fluid sticky-top bg-white shadow-sm">
+        @await Component.InvokeAsync("NavbarUILayout") @*Navbar*@
+    </div> 
+   
+    
+    
+
+    @RenderBody()
+
+   
+    <div class="container-fluid bg-dark text-light mt-5 py-5">
+        @await Component.InvokeAsync("FooterUILayout") @*Footer*@
+    </div>
+    <div class="container-fluid bg-dark text-light border-top border-secondary py-4">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-md-0">
+                        &copy; <a class="text-primary" href="https://yunuskucukdev.com.tr/">Yunus Küçük</a>. All Rights Reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0">
+                        Designed by <a class="text-primary" href="https://htmlcodex.com"
+                                       target="_blank">HTML Codex</a>. Distributed by <a href="https://themewagon.com"
+                                                                                         target="_blank">ThemeWagon</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @if (TempData["ContactSuccess"] != null)
+    {
+        <div id="contactToast" style="position:fixed;bottom:24px;right:24px;z-index:9999;
+             background:#1e293b;color:#fff;padding:14px 22px;border-radius:10px;
+             box-shadow:0 8px 24px rgba(0,0,0,.18);display:flex;align-items:center;gap:12px;
+             font-size:15px;max-width:360px;animation:slideIn .35s ease;">
+            <span style="font-size:1.4rem;">&#10003;</span>
+            <span>@TempData["ContactSuccess"]</span>
+        </div>
+        <style>
+            @@keyframes slideIn {
+                from { opacity:0; transform:translateY(20px); }
+                to   { opacity:1; transform:translateY(0); }
+            }
+        </style>
+        <script>setTimeout(function(){ var t=document.getElementById('contactToast'); if(t) t.remove(); }, 5000);</script>
+    }
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/Medinova-1.0.0/lib/easing/easing.min.js"></script>
+    <script src="~/Medinova-1.0.0/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/Medinova-1.0.0/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="~/Medinova-1.0.0/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="~/Medinova-1.0.0/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="~/Medinova-1.0.0/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <script src="~/Medinova-1.0.0/js/main.js"></script>
+
+    <!-- SignalR: Ziyaretçi kaydı -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        (function () {
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/visitorHub")
+                .withAutomaticReconnect()
+                .build();
+
+            connection.start()
+                .then(function () { return connection.invoke("RegisterVisitor"); })
+                .catch(function (err) { console.error("SignalR bağlantı hatası:", err); });
+        })();
+    </script>
+</body>
+</html>

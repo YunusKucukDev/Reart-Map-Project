@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/UI/Index.cshtml";
+}
+@using MapProject.DtoLayer.DTOs.ContactDto
+@model CreateContactDto
+
+<div class="container-fluid pt-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5" style="max-width: 500px;">
+            <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">Akılıza takılan bir şey mi var?</h5>
+            <h1 class="display-4">Bize Danışmaktan Çekinmeyin</h1>
+        </div>
+        @await Component.InvokeAsync("ContactAbout") @*Şirket bilgileri*@
+        <div class="row">
+            <div class="col-12" style="height: 500px;">
+                <div class="position-relative h-100">
+                    <iframe class="position-relative w-100 h-100"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d200065.3951111666!2d26.931252115624996!3d38.41785590000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14bbd8e2a762cad9%3A0x628c9ba9a56dd7e2!2zSXptaXI!5e0!3m2!1str!2str!4v1712770000000!5m2!1str!2str"
+                            frameborder="0"
+                            style="border:0;"
+                            allowfullscreen=""
+                            aria-hidden="false"
+                            tabindex="0">
+                    </iframe>
+                </div>
+            </div>
+        </div> @*Harita (Google maps)*@
+        <div class="row justify-content-center position-relative" style="margin-top: -200px; z-index: 1;">
+            <div class="col-lg-8">
+                <div class="bg-white rounded p-5 m-5 mb-0">
+                    <form asp-controller="Contact" asp-action="SendMessage" method="post">
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <input asp-for="UserName" type="text" class="form-control bg-light border-0" placeholder="İsminiz"
+                                       style="height: 55px;">
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <input asp-for="UserEmail" type="email" class="form-control bg-light border-0" placeholder="E-posta Adresiniz"
+                                       style="height: 55px;">
+                            </div>
+
+                            <div class="col-12">
+                                <textarea asp-for="Message" class="form-control bg-light border-0" rows="5" placeholder="Mesajınız"
+                                          style="padding: 15px;"></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <button class="btn btn-primary w-100 py-3" type="submit">
+                                    Gönder
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> @*Form*@
+    </div>
+</div>
+
+

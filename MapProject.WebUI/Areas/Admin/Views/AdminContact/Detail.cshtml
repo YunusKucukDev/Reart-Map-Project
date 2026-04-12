@@ -1,0 +1,50 @@
+@model GetByIdContactDto
+@{
+    ViewData["Title"] = "Mesaj Detayı";
+    ViewData["ActiveMenu"] = "Contact";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-envelope-open me-2 text-success"></i>Mesaj Detayı</span>
+                <a asp-area="Admin" asp-controller="AdminContact" asp-action="Index"
+                   class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Geri
+                </a>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 text-muted">Ad Soyad</dt>
+                    <dd class="col-sm-9 fw-medium">@Model.UserName</dd>
+
+                    <dt class="col-sm-3 text-muted">E-posta</dt>
+                    <dd class="col-sm-9">
+                        <a href="mailto:@Model.UserEmail">@Model.UserEmail</a>
+                    </dd>
+
+                    <dt class="col-sm-3 text-muted">Konu</dt>
+                    <dd class="col-sm-9">@Model.UserSubject</dd>
+
+                    <dt class="col-sm-3 text-muted">Mesaj</dt>
+                    <dd class="col-sm-9">
+                        <div class="bg-light rounded p-3" style="white-space: pre-wrap;">@Model.Message</div>
+                    </dd>
+                </dl>
+
+                <div class="mt-4 pt-3 border-top d-flex gap-2">
+                    <a href="mailto:@Model.UserEmail" class="btn btn-primary btn-sm">
+                        <i class="bi bi-reply me-1"></i>Yanıtla
+                    </a>
+                    <a asp-area="Admin" asp-controller="AdminContact" asp-action="Delete"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-outline-danger btn-sm"
+                       onclick="return confirm('Bu mesajı silmek istediğinize emin misiniz?')">
+                        <i class="bi bi-trash me-1"></i>Sil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
