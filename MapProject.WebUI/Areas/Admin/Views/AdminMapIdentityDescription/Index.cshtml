@@ -1,8 +1,9 @@
 @model ResultMapIdentityDescriptionDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "Harita Tanımı Güncelleme";
     ViewData["ActiveMenu"] = "MapIdentity";
-    string apiBase = "https://reart-map-project-api.onrender.com";
+    string apiBase = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
 
     string ResolvePath(string? path)
     {

@@ -1,13 +1,35 @@
 @model List<ResultCategoryDto>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "Kategoriler";
     ViewData["ActiveMenu"] = "Category";
-    // API adresini buraya tanımlıyoruz
-    string apiUrl = "https://reart-map-project-api.onrender.com";
+    string apiUrl = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
 }
 
+<style>
+    /* Mobil için kart tabanlı görünüm */
+    @@media (max-width: 767.98px) {
+        .cat-table-wrap { display: none; }
+        .cat-cards-wrap { display: block; }
+    }
+    @@media (min-width: 768px) {
+        .cat-table-wrap { display: block; }
+        .cat-cards-wrap { display: none; }
+    }
+    .cat-card {
+        background: #fff;
+        border-radius: 0.6rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.08);
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    .cat-card-title { font-weight: 600; font-size: 0.95rem; color: #1e293b; }
+    .cat-card-desc  { font-size: 0.82rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+    .cat-thumb { width: 38px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0; }
+</style>
+
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <span><i class="bi bi-grid-3x3-gap me-2 text-primary"></i>Kategoriler</span>
         <a asp-area="Admin" asp-controller="AdminCategory" asp-action="Create"
            class="btn btn-primary btn-sm">
@@ -23,89 +45,114 @@
         }
         else
         {
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Kategori Adı</th>
-                            <th>Açıklama</th>
-                            <th>Resim 1</th>
-                            <th>Resim 2</th>
-                            <th>Resim 3</th>
-                            <th style="width:130px;"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
+            /* ── Masaüstü tablo ── */
+            <div class="cat-table-wrap">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
                             <tr>
-                                <td class="fw-medium">@item.CategoryName</td>
-                                <td class="text-muted" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@item.Description</td>
-
-                                @* RESİM 1 *@
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.ImageUrl1))
-                                    {
-                                        <img src="@(apiUrl + item.ImageUrl1)" style="width:40px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #eee;" alt="" />
-                                    }
-                                    else
-                                    {
-
-                                        <span class="text-muted small">Yok</span>
-                                    }
-                                </td>
-
-                                @* RESİM 2 *@
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.ImageUrl2))
-                                    {
-                                        <img src="@(apiUrl + item.ImageUrl2)" style="width:40px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #eee;" alt="" />
-                                    }
-                                    else
-                                    {
-
-                                        <span class="text-muted small">-</span>
-                                    }
-                                </td>
-
-                                @* RESİM 3 *@
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.ImageUrl3))
-                                    {
-                                        <img src="@(apiUrl + item.ImageUrl3)" style="width:40px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #eee;" alt="" />
-                                    }
-                                    else
-                                    {
-
-                                        <span class="text-muted small">-</span>
-                                    }
-                                </td>
-
-                                <td>
-                                    <div class="d-flex gap-1 justify-content-end">
-                                        <a asp-area="Admin" asp-controller="AdminCategory" asp-action="ToggleFavorite"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-sm @(item.IsFavorite ? "btn-warning" : "btn-outline-warning")"
-                                           title="@(item.IsFavorite ? "Favoriden Çıkar" : "Favoriye Ekle")">
-                                            <i class="bi bi-star@(item.IsFavorite ? "-fill" : "")"></i>
-                                        </a>
-                                        <a asp-area="Admin" asp-controller="AdminCategory" asp-action="Edit"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-outline-primary btn-sm">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a asp-area="Admin" asp-controller="AdminCategory" asp-action="Delete"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-outline-danger btn-sm"
-                                           onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?')">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                <th>Kategori Adı</th>
+                                <th>Açıklama</th>
+                                <th>Resim 1</th>
+                                <th>Resim 2</th>
+                                <th>Resim 3</th>
+                                <th style="width:130px;"></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="fw-medium">@item.CategoryName</td>
+                                    <td class="text-muted" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@item.Description</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl1))
+                                        {
+                                            <img src="@(apiUrl + item.ImageUrl1)" class="cat-thumb" alt="" />
+                                        }
+                                        else { <span class="text-muted small">Yok</span> }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl2))
+                                        {
+                                            <img src="@(apiUrl + item.ImageUrl2)" class="cat-thumb" alt="" />
+                                        }
+                                        else { <span class="text-muted small">-</span> }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl3))
+                                        {
+                                            <img src="@(apiUrl + item.ImageUrl3)" class="cat-thumb" alt="" />
+                                        }
+                                        else { <span class="text-muted small">-</span> }
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1 justify-content-end">
+                                            <a asp-area="Admin" asp-controller="AdminCategory" asp-action="ToggleFavorite"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm @(item.IsFavorite ? "btn-warning" : "btn-outline-warning")"
+                                               title="@(item.IsFavorite ? "Favoriden Çıkar" : "Favoriye Ekle")">
+                                                <i class="bi bi-star@(item.IsFavorite ? "-fill" : "")"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="AdminCategory" asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="AdminCategory" asp-action="Delete"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-danger btn-sm"
+                                               onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            /* ── Mobil kart listesi ── */
+            <div class="cat-cards-wrap p-3">
+                @foreach (var item in Model)
+                {
+                    <div class="cat-card">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl1))
+                            {
+                                <img src="@(apiUrl + item.ImageUrl1)" class="cat-thumb" alt="" style="width:48px;height:48px;" />
+                            }
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="cat-card-title">@item.CategoryName</div>
+                                <div class="cat-card-desc">@item.Description</div>
+                            </div>
+                            <span class="badge @(item.IsFavorite ? "bg-warning text-dark" : "bg-light text-muted border") ms-auto">
+                                <i class="bi bi-star@(item.IsFavorite ? "-fill" : "")"></i>
+                            </span>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end pt-1 border-top">
+                            <a asp-area="Admin" asp-controller="AdminCategory" asp-action="ToggleFavorite"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm @(item.IsFavorite ? "btn-warning" : "btn-outline-warning")"
+                               title="Favori">
+                                <i class="bi bi-star@(item.IsFavorite ? "-fill" : "")"></i>
+                            </a>
+                            <a asp-area="Admin" asp-controller="AdminCategory" asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-pencil"></i> Düzenle
+                            </a>
+                            <a asp-area="Admin" asp-controller="AdminCategory" asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-danger btn-sm"
+                               onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
         }
     </div>

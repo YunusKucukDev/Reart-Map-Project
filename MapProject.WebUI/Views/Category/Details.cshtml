@@ -1,8 +1,17 @@
 @using MapProject.DtoLayer.DTOs.CategoryDto
 @model UpdateCategoryDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     Layout = "~/Views/UI/Index.cshtml";
     ViewData["Title"] = Model?.CategoryName ?? "Kategori Detayı";
+    string apiUrl = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
+
+    string ResolveImg(string? path)
+    {
+        if (string.IsNullOrEmpty(path)) return "";
+        if (path.StartsWith("http")) return path;
+        return apiUrl + (path.StartsWith("/") ? path : "/" + path);
+    }
 }
 
 <style>
@@ -328,6 +337,21 @@
         transition: opacity 0.6s ease, transform 0.6s ease;
     }
         .fade-up.in { opacity: 1; transform: translateY(0); }
+
+    /* ===== MOBILE ===== */
+    @@media (max-width: 767.98px) {
+        .detail-hero { padding: 48px 0 36px; }
+        .gallery-thumbs { gap: 6px; }
+        .detail-card { border-radius: 16px; }
+        .info-chips { gap: 7px; }
+        .info-chip { font-size: 12px; padding: 5px 12px; }
+        .btn-back, .btn-explore { padding: 8px 18px; font-size: 13px; }
+    }
+    @@media (max-width: 575.98px) {
+        .detail-hero { padding: 36px 0 28px; }
+        .gallery-main { border-radius: 14px; }
+        .gallery-thumb { border-radius: 8px; }
+    }
 </style>
 
 <!-- ===== HERO ===== -->
@@ -378,6 +402,7 @@
                     @{
                         var images = new[] { Model.ImageUrl1, Model.ImageUrl2, Model.ImageUrl3 }
                                      .Where(u => !string.IsNullOrEmpty(u))
+                                     .Select(u => ResolveImg(u))
                                      .ToList();
                         var mainImg = images.FirstOrDefault();
                     }

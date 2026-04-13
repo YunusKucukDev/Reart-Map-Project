@@ -1,11 +1,12 @@
 @using MapProject.DtoLayer.DTOs.MapIdentityDescriptionDto
 @model ResultMapIdentityDescriptionDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "Harita Kimliği";
     Layout = "~/Views/UI/Index.cshtml";
 
     // KRİTİK AYAR: Resimlerin fiziksel olarak bulunduğu API adresi
-    string apiBase = "https://reart-map-project-api.onrender.com";
+    string apiBase = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
 
     // Bu fonksiyon resim yolunu kontrol eder ve 5000 portuna yönlendirir
     string ResolvePath(string? path)

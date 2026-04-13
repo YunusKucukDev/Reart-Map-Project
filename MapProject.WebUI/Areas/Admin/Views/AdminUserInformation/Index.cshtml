@@ -1,8 +1,9 @@
 @model ResultUserInformationDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "Firma Bilgileri";
     ViewData["ActiveMenu"] = "UserInformation";
-    string apiUrl = "https://reart-map-project-api.onrender.com";
+    string apiUrl = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
 
     // Resim mantığını tek bir yerde kuruyoruz
     string finalImgSrc = "";

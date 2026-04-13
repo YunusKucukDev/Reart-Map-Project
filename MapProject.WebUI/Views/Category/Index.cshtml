@@ -1,8 +1,11 @@
 @using MapProject.DtoLayer.DTOs.CategoryDto
 @model List<ResultCategoryDto>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     Layout = "~/Views/UI/Index.cshtml";
     ViewData["Title"] = "Kategoriler";
+    string _apiBase = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
+    string _img(string? p) => string.IsNullOrEmpty(p) ? "" : (p.StartsWith("http") ? p : _apiBase + (p.StartsWith("/") ? p : "/" + p));
 }
 
 <style>
@@ -405,6 +408,20 @@
         color: #adb5bd;
         font-size: 48px;
     }
+
+    /* ===== MOBILE ===== */
+    @@media (max-width: 767.98px) {
+        .category-page-header { padding: 48px 0 36px; }
+        .stats-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
+        .filter-bar { width: 100%; }
+        .search-input-wrap { width: 100%; }
+        .search-input-wrap input { width: 100%; }
+        .category-card-img { height: 200px; }
+    }
+    @@media (max-width: 575.98px) {
+        .category-page-header { padding: 36px 0 24px; }
+        .category-card-img { height: 180px; }
+    }
 </style>
 
 
@@ -476,7 +493,7 @@
                                 <div class="category-card-img">
                                     @if (!string.IsNullOrEmpty(category.ImageUrl1))
                                     {
-                                        <img src="@category.ImageUrl1"
+                                        <img src="@_img(category.ImageUrl1)"
                                              alt="@category.CategoryName"
                                              onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><i class=\'fas\'></i></div>'" />
                                     }
@@ -495,17 +512,17 @@
                                     <div class="card-thumb-group">
                                         @if (!string.IsNullOrEmpty(category.ImageUrl1))
                                         {
-                                            <img src="@category.ImageUrl1" class="card-thumb" title="Görsel 1"
+                                            <img src="@_img(category.ImageUrl1)" class="card-thumb" title="Görsel 1"
                                                  onerror="this.style.display='none'" />
                                         }
                                         @if (!string.IsNullOrEmpty(category.ImageUrl2))
                                         {
-                                            <img src="@category.ImageUrl2" class="card-thumb" title="Görsel 2"
+                                            <img src="@_img(category.ImageUrl2)" class="card-thumb" title="Görsel 2"
                                                  onerror="this.style.display='none'" />
                                         }
                                         @if (!string.IsNullOrEmpty(category.ImageUrl3))
                                         {
-                                            <img src="@category.ImageUrl3" class="card-thumb" title="Görsel 3"
+                                            <img src="@_img(category.ImageUrl3)" class="card-thumb" title="Görsel 3"
                                                  onerror="this.style.display='none'" />
                                         }
                                     </div>
