@@ -25,4 +25,8 @@
     <ProjectReference Include="..\MapProject.DtoLayer\MapProject.DtoLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

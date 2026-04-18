@@ -25,16 +25,12 @@ namespace MapProject.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserIdentityDto>> Login(LoginDto model)
         {
-            // 1. Kullanıcıyı bul
+            
             var user = await _userManager.FindByNameAsync(model.UserName);
-
-            // 2. Kullanıcı var mı ve şifre doğru mu kontrol et
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 return Unauthorized(new ProblemDetails { Title = "Kullanıcı adı veya şifre hatalı" });
             }
-
-            // 3. Token oluştur ve kullanıcı bilgilerini dön
             return Ok(new UserIdentityDto
             {
                 Token = await _tokenService.GenerateToken(user),

@@ -4,7 +4,7 @@
 @{
     Layout = "~/Views/UI/Index.cshtml";
     ViewData["Title"] = "Kategoriler";
-    string _apiBase = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
+    string _apiBase = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
     string _img(string? p) => string.IsNullOrEmpty(p) ? "" : (p.StartsWith("http") ? p : _apiBase + (p.StartsWith("/") ? p : "/" + p));
 }
 

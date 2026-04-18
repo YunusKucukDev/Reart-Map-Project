@@ -3,7 +3,7 @@
 
 @model List<ResultCategoryDto>
 @{
-    string _apiBase = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
+    string _apiBase = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
     string _img(string? p) => string.IsNullOrEmpty(p) ? "" : (p.StartsWith("http") ? p : _apiBase + (p.StartsWith("/") ? p : "/" + p));
 }
 
@@ -11,7 +11,7 @@
     <div class="container">
         <div class="text-center mx-auto mb-5" style="max-width: 500px;">
             <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">Reart Ajans</h5>
-            <h1 class="display-4">En çok Tercih Edilen Haritalarımız</h1>
+            <h1 class="display-5">En çok Tercih Edilenler</h1>
         </div>
         <div class="owl-carousel price-carousel position-relative" style="padding: 0 45px 45px 45px;">
             @foreach (var item in Model)

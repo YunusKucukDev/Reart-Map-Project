@@ -2,6 +2,7 @@ using MapProject.Api.Data;
 using MapProject.Api.Entities;
 using MapProject.Api.Services.CategoryService;
 using MapProject.Api.Services.ContactService;
+using MapProject.Api.Services.CourselService;
 using MapProject.Api.Services.IdentityService;
 using MapProject.Api.Services.MapIdentityDescriptionService;
 using MapProject.Api.Services.UserInformationService;
@@ -70,6 +71,7 @@ builder.Services.AddScoped<IUserInformationService, UserInformationService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IMapIdentityDescriptionService, MapIdentityDescriptionService>();
 builder.Services.AddScoped<IVisitorLogService, VisitorLogService>();
+builder.Services.AddScoped<ICoureselService, CoureselService>();
 
 
 
@@ -84,8 +86,6 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 
-
-app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseCors("AllowAll");

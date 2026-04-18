@@ -1,0 +1,139 @@
+@model List<ResultCoureselDto>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Carousel Slaytlar";
+    ViewData["ActiveMenu"] = "Couresel";
+    string apiUrl = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
+}
+
+<style>
+    @@media (max-width: 767.98px) {
+        .slide-table-wrap { display: none; }
+        .slide-cards-wrap { display: block; }
+    }
+    @@media (min-width: 768px) {
+        .slide-table-wrap { display: block; }
+        .slide-cards-wrap { display: none; }
+    }
+    .slide-card {
+        background: #fff;
+        border-radius: 0.6rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.08);
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    .slide-thumb {
+        width: 80px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+    }
+    .slide-table-thumb {
+        width: 100px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-images me-2 text-primary"></i>Carousel Slaytlar</span>
+        <a asp-area="Admin" asp-controller="AdminCouresel" asp-action="Create"
+           class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Yeni Slayt
+        </a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-images fs-1 d-block mb-2"></i>Henüz slayt yok.
+            </div>
+        }
+        else
+        {
+            <div class="slide-table-wrap">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Görsel</th>
+                                <th>Başlık</th>
+                                <th>Açıklama</th>
+                                <th style="width:110px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@(apiUrl + item.ImageUrl)" class="slide-table-thumb" alt="" />
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">Yok</span>
+                                        }
+                                    </td>
+                                    <td class="fw-medium">@item.Title</td>
+                                    <td class="text-muted" style="max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@item.Descripton</td>
+                                    <td>
+                                        <div class="d-flex gap-1 justify-content-end">
+                                            <a asp-area="Admin" asp-controller="AdminCouresel" asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="AdminCouresel" asp-action="Delete"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-danger btn-sm"
+                                               onclick="return confirm('Bu slaytı silmek istediğinize emin misiniz?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="slide-cards-wrap p-3">
+                @foreach (var item in Model)
+                {
+                    <div class="slide-card">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@(apiUrl + item.ImageUrl)" class="slide-thumb" alt="" />
+                            }
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-semibold text-truncate">@item.Title</div>
+                                <div class="text-muted small text-truncate">@item.Descripton</div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end pt-1 border-top">
+                            <a asp-area="Admin" asp-controller="AdminCouresel" asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-pencil"></i> Düzenle
+                            </a>
+                            <a asp-area="Admin" asp-controller="AdminCouresel" asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-danger btn-sm"
+                               onclick="return confirm('Bu slaytı silmek istediğinize emin misiniz?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

@@ -6,7 +6,6 @@ namespace MapProject.WebUI.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {
-        private string BaseUrl = "https://reart-map-project-api.onrender.com";
         private readonly HttpClient _httpClient;
 
         public CategoryService(HttpClient httpClient)
@@ -27,7 +26,7 @@ namespace MapProject.WebUI.Services.CategoryService
             AddFileToContent(content, file2, "file2");
             AddFileToContent(content, file3, "file3");
 
-            await _httpClient.PostAsync($"{BaseUrl}/api/Categories", content);
+            await _httpClient.PostAsync("api/Categories", content);
         }
 
         public async Task UpdateCategory(UpdateCategoryDto dto, IFormFile? file1, IFormFile? file2, IFormFile? file3)
@@ -45,7 +44,7 @@ namespace MapProject.WebUI.Services.CategoryService
             AddFileToContent(content, file2, "file2");
             AddFileToContent(content, file3, "file3");
 
-            await _httpClient.PutAsync($"{BaseUrl}/api/Categories", content);
+            await _httpClient.PutAsync("api/Categories", content);
         }
 
         // Tekrarlanan dosya ekleme işlemini basitleştirmek için yardımcı metod
@@ -63,22 +62,22 @@ namespace MapProject.WebUI.Services.CategoryService
 
         public async Task DeleteCategory(string categoryId)
         {
-            await _httpClient.DeleteAsync($"{BaseUrl}/api/Categories/{categoryId}");
+            await _httpClient.DeleteAsync($"api/Categories/{categoryId}");
         }
 
         public async Task<List<ResultCategoryDto>> GetAllCategories()
         {
-            return await _httpClient.GetFromJsonAsync<List<ResultCategoryDto>>($"{BaseUrl}/api/Categories") ?? new();
+            return await _httpClient.GetFromJsonAsync<List<ResultCategoryDto>>("api/Categories") ?? new();
         }
 
         public async Task<List<ResultCategoryDto>> GetFavoriteCategories()
         {
-            return await _httpClient.GetFromJsonAsync<List<ResultCategoryDto>>($"{BaseUrl}/api/Categories/favorites") ?? new();
+            return await _httpClient.GetFromJsonAsync<List<ResultCategoryDto>>("api/Categories/favorites") ?? new();
         }
 
         public async Task<UpdateCategoryDto> GetByIdCategory(string categoryId)
         {
-            return await _httpClient.GetFromJsonAsync<UpdateCategoryDto>($"{BaseUrl}/api/Categories/{categoryId}");
+            return await _httpClient.GetFromJsonAsync<UpdateCategoryDto>($"api/Categories/{categoryId}");
         }
     }
 }

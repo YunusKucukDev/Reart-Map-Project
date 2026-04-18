@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Kategoriler";
     ViewData["ActiveMenu"] = "Category";
-    string apiUrl = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
+    string apiUrl = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
 }
 
 <style>

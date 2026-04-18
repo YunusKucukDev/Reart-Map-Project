@@ -7,24 +7,25 @@
 <div class="container-fluid bg-primary py-5 mb-5 hero-header">
     <div class="container py-5">
         <div class="row justify-content-start">
-            <div class="col-lg-8 text-center text-lg-start">
-                <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5"
-                    style="border-color: rgba(256, 256, 256, .3) !important;">
-                    ReArt Ajans
-                </h5>
-                <h1 class="display-1 text-white mb-md-4">Sizin Rotanız, Bizim Sanatımız</h1>
-                <div class="pt-2 px-2">
-                    <a href="/Contact/index" class="btn btn-light rounded-pill py-md-3 px-md-5 mx-2">Fikirlerinizi Paylaşın</a>
+            <div class="col-lg-8 text-start">
+                <h1 class="display-1 text-white mb-md-4">Haritaya dair her şey..</h1>
 
-                    <div class="position-relative d-inline-block mx-2">
-                        <a href="#!" class="btn btn-outline-light rounded-pill py-md-3 px-md-4 mx-2 disabled">E-Ticaret Mağazamız</a>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem; z-index: 1;">
+                <div class="pt-2 d-flex flex-wrap gap-3 justify-content-start">
+
+                    <a href="#" class="btn btn-primary" style="background-color: #34cde2; border-color: #34cde2; color: black; font-weight:bold;">
+                        Fikirlerinizi Paylaşın
+                    </a>
+
+                    <div class="position-relative d-inline-block">
+                        <a href="#!" style="background-color: #34cde2; border-color: #34cde2; color: black; font-weight:bold;" class="disabled btn btn-primary">E-Ticaret Mağazamız</a>
+                        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem; z-index: 1; white-space: nowrap;">
                             Yakında
                         </span>
                     </div>
+
                     <div class="position-relative d-inline-block">
-                        <a href="#!" class="btn btn-outline-light rounded-pill py-md-3 px-md-4 mx-2 disabled">Reart Production</a>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem; z-index: 1;">
+                        <a href="#!" style="background-color: #34cde2; border-color: #34cde2; color: black; font-weight:bold;" class="disabled btn btn-primary">Reart Prodüksiyon</a>
+                        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem; z-index: 1; white-space: nowrap;">
                             Yakında
                         </span>
                     </div>
@@ -33,25 +34,25 @@
         </div>
     </div>
 </div>
-<!-- Hero End -->
 
-
-<!-- About Start -->
 @await Component.InvokeAsync("HomeAbout") @*About*@
-<!-- About End -->
+
+<!-- Carousel Start -->
+@await Component.InvokeAsync("CoureselSection") @*FavoriteMaps*@
+<!-- Carousel End -->
 
 <!-- Pricing Plan Start -->
 @await Component.InvokeAsync("HomeFavoriteMaps") @*FavoriteMaps*@
 <!-- Pricing Plan End -->
+<!-- About Start -->
 
+<!-- About End -->
 <!-- İletişim Start -->
 @await Component.InvokeAsync("HomeContact") @*Contact*@
 <!-- İletişim End -->
-
 <!-- Team Start -->
 @await Component.InvokeAsync("HomeCategoryList") @*Categories*@
 <!-- Team End -->
-
 <!-- Work Process Start -->
 @await Component.InvokeAsync("HomeWorkProcess") @*WorkProcess*@
 <!-- Work Process End -->

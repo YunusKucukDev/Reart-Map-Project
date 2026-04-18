@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MapProject.Api.DTOs.CategoryDto;
 using MapProject.Api.DTOs.ContactDto;
+using MapProject.Api.DTOs.CoureselDto;
 using MapProject.Api.DTOs.MapIdentityDescriptionDto;
 using MapProject.Api.DTOs.UserIdentityDto;
 using MapProject.Api.DTOs.UserInformationDto;
@@ -17,6 +18,10 @@ namespace MapProject.Api.Mapping
             CreateMap<Category, UpdateCategoryDto>().ReverseMap();
             CreateMap<Category, ResultCategoryDto>().ReverseMap();
             CreateMap<Category, GetByIdCategoryId>().ReverseMap();
+
+            CreateMap<Couresel, CreateCoureselDto>().ReverseMap();
+            CreateMap<Couresel, UpdateCoureselDto>().ReverseMap();
+            CreateMap<Couresel, ResultCoureselDto>().ReverseMap();
 
             CreateMap<Contact, CreateContactDto>().ReverseMap();
             CreateMap<Contact, GetByIdContactDto>().ReverseMap();

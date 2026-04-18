@@ -5,6 +5,7 @@ using MapProject.WebUI.Services.ContactService;
 using MapProject.WebUI.Services.IdentityService;
 using MapProject.WebUI.Services.MapIdentityDescriptionService;
 using MapProject.WebUI.Services.UserInformationService;
+using MapProject.WebUI.Services.CoureselService;
 using MapProject.WebUI.Services.VisitorLogService;
 using MapProject.WebUI.Services.VisitorService;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -16,11 +17,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<VisitorTracker>();
 
-// 2. Email Ayarlarý
+// 2. Email Ayarlarï¿½
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<IEmailService, EmailService>();
 
-// 3. Kimlik Doðrulama (Cookie) Ayarlarý
+// 3. Kimlik Doï¿½rulama (Cookie) Ayarlarï¿½
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -32,8 +33,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "MapProject.Cookie";
     });
 
-// 4. API Baðlantý Ayarlarý (HttpClient Factory)
-// appsettings.json dosyanýzdaki "ApiSettings:BaseUrl" deðerini okur.
+// 4. API Baï¿½lantï¿½ Ayarlarï¿½ (HttpClient Factory)
+// appsettings.json dosyanï¿½zdaki "ApiSettings:BaseUrl" deï¿½erini okur.
 var apiUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
 
 builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt => opt.BaseAddress = apiUri);
@@ -42,27 +43,27 @@ builder.Services.AddHttpClient<IMapIdentityDescriptionService, MapIdentityDescri
 builder.Services.AddHttpClient<IUserInformationService, UserInformationService>(opt => opt.BaseAddress = apiUri);
 builder.Services.AddHttpClient<IIdentityService, IdentityService>(opt => opt.BaseAddress = apiUri);
 builder.Services.AddHttpClient<IVisitorLogService, VisitorLogService>(opt => opt.BaseAddress = apiUri);
+builder.Services.AddHttpClient<ICoureselService, CoureselService>(opt => opt.BaseAddress = apiUri);
 
-// 5. Uygulama Oluþturma
+// 5. Uygulama Oluï¿½turma
 var app = builder.Build();
 
-// 6. Middleware (Ara Yazýlým) Yapýlandýrmasý
+// 6. Middleware (Ara Yazï¿½lï¿½m) Yapï¿½landï¿½rmasï¿½
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
-// Önce Authentication (Kimlik Doðrulama), Sonra Authorization (Yetkilendirme)
+// ï¿½nce Authentication (Kimlik Doï¿½rulama), Sonra Authorization (Yetkilendirme)
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 7. Hub ve Route Tanýmlamalarý
+// 7. Hub ve Route Tanï¿½mlamalarï¿½
 app.MapHub<VisitorHub>("/visitorHub");
 
 app.MapControllerRoute(

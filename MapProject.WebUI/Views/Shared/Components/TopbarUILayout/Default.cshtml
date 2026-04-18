@@ -2,32 +2,44 @@
 @model ResultUserInformationDto
 
 <div class="container">
-    <div class="row">
+    <div class="row border-2">
         <div class="col-md-6 text-center text-lg-start mb-2 mb-lg-0">
             <div class="d-inline-flex align-items-center">
-                <a class="text-decoration-none text-body pe-3" href="#!">
-                    <i class="bi bi-telephone me-2"></i>
-                    @Model.PhoneNumber
+                <a  class="text-decoration-none text-body pe-3" href="#!">
+                    <i style="color:rgb(19, 197, 221)" class="bi bi-telephone me-2"></i>
+                    <span style="color:rgb(19, 197, 221)">
+                        @Model.PhoneNumber
+                    </span>
                 </a>
                 <span class="text-body">|</span>
                 <a class="text-decoration-none text-body px-3" href="#!">
-                    <i class="bi bi-envelope me-2"></i>@Model.Email
+                    <i style="color:rgb(19, 197, 221)" class="bi bi-envelope me-2"></i>
+                    <span style="color:rgb(19, 197, 221)">
+                            @Model.Email
+                    </span>
+                    
                 </a>
             </div>
         </div>
         <div class="col-md-6 text-center text-lg-end">
             <div class="d-inline-flex align-items-center">
                 <a class="text-body px-2" href="@Model.XLink">
-                    <i class="fab fa-twitter"></i>
+                    <i style="color:rgb(19, 197, 221)" class="fab fa-twitter"></i>
                 </a>
                 <a class="text-body px-2" href="@Model.LinkednLink">
-                    <i class="fab fa-linkedin-in"></i>
+                    <i style="color:rgb(19, 197, 221)" class="fab fa-linkedin-in"></i>
                 </a>
                 <a class="text-body px-2" href="@Model.InstagramLink">
-                    <i class="fab fa-instagram"></i>
+                    <i style="color:rgb(19, 197, 221)" class="fab fa-instagram"></i>
                 </a>
                 <a class="text-body px-2" href="@Model.WPLink">
-                    <i class="fab fa-whatsapp"></i>
+                    <i style="color:rgb(19, 197, 221)" class="fab fa-whatsapp"></i>
+                </a>
+                <a class="text-body px-2" href="@Model.PinterestLink">
+                    <i style="color:rgb(19, 197, 221)" class="fab fa-pinterest"></i>
+                </a>
+                <a class="text-body px-2" href="@Model.FacebookLink">
+                    <i style="color:rgb(19, 197, 221)" class="fab fa-facebook"></i>
                 </a>
             </div>
         </div>

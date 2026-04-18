@@ -15,6 +15,8 @@
         public string PhoneNumber { get; set; }
         public string LinkednLink { get; set; }
         public string InstagramLink { get; set; }
+        public string FacebookLink { get; set; } = "string";
+        public string PinterestLink { get; set; } = "string";
         public string XLink { get; set; }
         public string WPLink { get; set; }
     }

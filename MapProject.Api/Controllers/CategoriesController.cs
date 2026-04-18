@@ -51,7 +51,7 @@ namespace MapProject.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategories([FromForm] CreateCategoryDto dto, IFormFile? file1, IFormFile? file2, IFormFile? file3)
         {
-            // Resimler varsa kaydet ve URL'lerini DTO'ya ata
+           
             if (file1 != null) dto.ImageUrl1 = await SaveImage(file1);
             if (file2 != null) dto.ImageUrl2 = await SaveImage(file2);
             if (file3 != null) dto.ImageUrl3 = await SaveImage(file3);
@@ -122,22 +122,23 @@ namespace MapProject.Api.Controllers
 
         private async Task<string> SaveImage(IFormFile file)
         {
-            // API projesinden bir üst klasöre çık ve WebUI projesinin images klasörünü hedefle
-            // Proje adının "MapProject.WebUI" olduğundan emin ol, değilse klasör adını düzelt.
-            var webUIPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "MapProject.WebUI", "wwwroot", "images");
+            // API'nin kendi wwwroot/images klasörünü hedefle
+            var apiPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
-            if (!Directory.Exists(webUIPath))
-                Directory.CreateDirectory(webUIPath);
+            if (!Directory.Exists(apiPath))
+                Directory.CreateDirectory(apiPath);
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var fullPath = Path.Combine(webUIPath, fileName);
+            var fullPath = Path.Combine(apiPath, fileName);
 
             using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            return "/images/" + fileName; // Veritabanına yine aynı formatta kaydediyoruz
+            // Veritabanına tam URL veya sadece API yolu olarak kaydedilir
+            // Örn: https://api.ajansreart.com/images/dosya.jpg
+            return "/images/" + fileName;
         }
 
         private void DeleteOldImage(string? imageUrl)
@@ -146,11 +147,15 @@ namespace MapProject.Api.Controllers
 
             try
             {
+                // Resim yolu "/images/" ile başlıyorsa API'nin kendi wwwroot klasörüne bak
                 if (imageUrl.StartsWith("/images/"))
                 {
-                    // Silme işlemi için de aynı WebUI yoluna gidiyoruz
-                    var webUIPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "MapProject.WebUI", "wwwroot");
-                    var oldFilePath = Path.Combine(webUIPath, imageUrl.TrimStart('/'));
+                    // API'nin çalıştığı kök dizindeki wwwroot klasörünü bulur
+                    var apiWwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+                    // Veritabanındaki "/images/dosya.jpg" yolunu fiziksel yola çevirir
+                    // Path.Combine ("/images/..." kısmındaki baştaki slash'ı otomatik yönetir ama garantiye almak için TrimStart iyidir)
+                    var oldFilePath = Path.Combine(apiWwwrootPath, imageUrl.TrimStart('/'));
 
                     if (System.IO.File.Exists(oldFilePath))
                     {
@@ -158,7 +163,11 @@ namespace MapProject.Api.Controllers
                     }
                 }
             }
-            catch { /* Loglanabilir */ }
+            catch (Exception ex)
+            {
+                // Canlı ortamda hatayı takip etmek istersen buraya log ekleyebilirsin
+                //_logger.LogError($"Resim silinirken hata: {ex.Message}");
+            }
         }
     }
 }

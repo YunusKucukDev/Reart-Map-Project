@@ -32,9 +32,6 @@ namespace MapProject.WebUI.Controllers
         {
             if (!ModelState.IsValid)
 
-
-
-
                 return View(loginDto);
 
             UserIdentityDto? result;

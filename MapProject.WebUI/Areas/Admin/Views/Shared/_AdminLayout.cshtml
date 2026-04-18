@@ -196,6 +196,10 @@
                asp-area="Admin" asp-controller="AdminMapIdentityDescription" asp-action="Index">
                 <i class="bi bi-map"></i> Harita Tanımı
             </a>
+            <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "Couresel" ? "active" : "")"
+               asp-area="Admin" asp-controller="AdminCouresel" asp-action="Index">
+                <i class="bi bi-images"></i> Carousel
+            </a>
             <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "Contact" ? "active" : "")"
                asp-area="Admin" asp-controller="AdminContact" asp-action="Index">
                 <i class="bi bi-envelope"></i> Mesajlar

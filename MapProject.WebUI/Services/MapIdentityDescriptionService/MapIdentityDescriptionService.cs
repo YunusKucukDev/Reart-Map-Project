@@ -6,7 +6,6 @@ namespace MapProject.WebUI.Services.MapIdentityDescriptionService
 {
     public class MapIdentityDescriptionService : IMapIdentityDescriptionService
     {
-        private readonly string BaseUrl = "https://reart-map-project-api.onrender.com";
         private readonly HttpClient _httpClient;
 
         public MapIdentityDescriptionService(HttpClient httpClient)
@@ -23,11 +22,10 @@ namespace MapProject.WebUI.Services.MapIdentityDescriptionService
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{BaseUrl}/api/MapIdentityDescriptions");
+                var response = await _httpClient.GetAsync("api/MapIdentityDescriptions");
                 var body = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
-                    // log response.StatusCode and body
                     return new ResultMapIdentityDescriptionDto();
                 }
                 return JsonSerializer.Deserialize<ResultMapIdentityDescriptionDto>(body, _jsonOptions);
@@ -47,7 +45,7 @@ namespace MapProject.WebUI.Services.MapIdentityDescriptionService
             AddFileToContent(content, file2, "file2");
             AddFileToContent(content, file3, "file3");
 
-            await _httpClient.PostAsync($"{BaseUrl}/api/MapIdentityDescriptions", content);
+            await _httpClient.PostAsync("api/MapIdentityDescriptions", content);
         }
 
         public async Task UpdateMapIdentityDescriptionDto(UpdateMapIdentityDescriptionDto dto, IFormFile? file1, IFormFile? file2, IFormFile? file3)
@@ -58,7 +56,7 @@ namespace MapProject.WebUI.Services.MapIdentityDescriptionService
             AddFileToContent(content, file2, "file2");
             AddFileToContent(content, file3, "file3");
 
-            var response = await _httpClient.PutAsync($"{BaseUrl}/api/MapIdentityDescriptions", content);
+            var response = await _httpClient.PutAsync("api/MapIdentityDescriptions", content);
             if (!response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync();
@@ -94,12 +92,12 @@ namespace MapProject.WebUI.Services.MapIdentityDescriptionService
 
         public async Task<UpdateMapIdentityDescriptionDto> GetByIdMapIdentityDescription(string id)
         {
-            return await _httpClient.GetFromJsonAsync<UpdateMapIdentityDescriptionDto>($"{BaseUrl}/api/MapIdentityDescriptions/{id}");
+            return await _httpClient.GetFromJsonAsync<UpdateMapIdentityDescriptionDto>($"api/MapIdentityDescriptions/{id}");
         }
 
         public async Task DeleteMapIdentityDescriptionDto(string id)
         {
-            await _httpClient.DeleteAsync($"{BaseUrl}/api/MapIdentityDescriptions/{id}");
+            await _httpClient.DeleteAsync($"api/MapIdentityDescriptions/{id}");
         }
     }
 }

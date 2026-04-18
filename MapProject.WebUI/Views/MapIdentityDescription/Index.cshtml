@@ -6,7 +6,7 @@
     Layout = "~/Views/UI/Index.cshtml";
 
     // KRİTİK AYAR: Resimlerin fiziksel olarak bulunduğu API adresi
-    string apiBase = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
+    string apiBase = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
 
     // Bu fonksiyon resim yolunu kontrol eder ve 5000 portuna yönlendirir
     string ResolvePath(string? path)

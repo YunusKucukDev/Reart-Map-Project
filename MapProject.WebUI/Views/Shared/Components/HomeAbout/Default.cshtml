@@ -1,12 +1,17 @@
 ﻿@using MapProject.DtoLayer.DTOs.UserInformationDto
 @model ResultUserInformationDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    string _apiBase = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
+    string _img(string? p) => string.IsNullOrEmpty(p) ? "" : (p.StartsWith("http") ? p : _apiBase + (p.StartsWith("/") ? p : "/" + p));
+}
 
 <div class="container-fluid py-5">
     <div class="container">
         <div class="row gx-5">
             <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
                 <div class="position-relative h-100">
-                    <img class="position-absolute w-100 h-100 rounded" src="@Model.Image"
+                    <img class="position-absolute w-100 h-100 rounded" src="@_img(Model.Image)"
                          style="object-fit: cover;">
                 </div>
             </div>

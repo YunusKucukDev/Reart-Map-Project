@@ -4,8 +4,6 @@ namespace MapProject.WebUI.Services.ContactService
 {
     public class ContactService : IContactService
     {
-
-        private string BaseUrl = "https://reart-map-project-api.onrender.com";
         private readonly HttpClient _httpClient;
 
         public ContactService(HttpClient httpClient)
@@ -15,28 +13,27 @@ namespace MapProject.WebUI.Services.ContactService
 
         public async Task CreateContactService(CreateContactDto dto)
         {
-            await _httpClient.PostAsJsonAsync(BaseUrl + "/api/Contacts", dto);
+            await _httpClient.PostAsJsonAsync("api/Contacts", dto);
         }
 
         public async Task DeleteContactService(string id)
         {
-            await _httpClient.DeleteAsync(BaseUrl + "/api/Contacts/" + id);
+            await _httpClient.DeleteAsync($"api/Contacts/{id}");
         }
 
         public async Task<List<ResultContactDto>> GetAllContact()
         {
-            return await _httpClient.GetFromJsonAsync<List<ResultContactDto>>(BaseUrl + "/api/Contacts");
+            return await _httpClient.GetFromJsonAsync<List<ResultContactDto>>("api/Contacts");
         }
 
         public async Task<GetByIdContactDto> GetByIdContact(string id)
         {
-
-            return await _httpClient.GetFromJsonAsync<GetByIdContactDto>(BaseUrl + "/api/Contacts/" + id);
+            return await _httpClient.GetFromJsonAsync<GetByIdContactDto>($"api/Contacts/{id}");
         }
 
         public async Task UpdateContactDto(UpdateContactDto dto)
         {
-            await _httpClient.PutAsJsonAsync(BaseUrl + "/api/Contacts", dto);
+            await _httpClient.PutAsJsonAsync("api/Contacts", dto);
         }
     }
 }

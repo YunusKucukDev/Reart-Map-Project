@@ -11,7 +11,6 @@ namespace MapProject.Api.Controllers
     public class MapIdentityDescriptionsController : ControllerBase
     {
         private readonly IMapIdentityDescriptionService _service;
-        private string GetWebUIPath() => Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "MapProject.WebUI", "wwwroot", "images");
 
         public MapIdentityDescriptionsController(IMapIdentityDescriptionService service)
         {
@@ -82,22 +81,24 @@ namespace MapProject.Api.Controllers
         {
             if (file == null || file.Length == 0) return null;
 
-            // Hedef: WebUI projesindeki wwwroot/images
-            var targetPath = GetWebUIPath();
+            // Hedef: API'nin kendi içindeki wwwroot/images
+            // Directory.GetCurrentDirectory() canlıda api.ajansreart.com klasörünü gösterir
+            var apiWwwroot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
-            if (!Directory.Exists(targetPath))
+            if (!Directory.Exists(apiWwwroot))
             {
-                Directory.CreateDirectory(targetPath);
+                Directory.CreateDirectory(apiWwwroot);
             }
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var fullPath = Path.Combine(targetPath, fileName);
+            var fullPath = Path.Combine(apiWwwroot, fileName);
 
             using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
+            // Veritabanına sadece yolu kaydediyoruz
             return "/images/" + fileName;
         }
     }

@@ -4,7 +4,7 @@
 @{
     Layout = "~/Views/UI/Index.cshtml";
     ViewData["Title"] = Model?.CategoryName ?? "Kategori Detayı";
-    string apiUrl = Configuration["ApiSettings:BaseUrl"] ?? "https://reart-map-project-api.onrender.com";
+    string apiUrl = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
 
     string ResolveImg(string? path)
     {

@@ -16,8 +16,7 @@ namespace MapProject.Api.Controllers
             _service = service;
         }
 
-        // WebUI projesinin fiziksel yolunu döndüren yardımcı metot
-        private string GetWebUIPath() => Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "MapProject.WebUI", "wwwroot");
+        
 
         [HttpGet]
         public async Task<IActionResult> GetUserInformation()
@@ -76,10 +75,12 @@ namespace MapProject.Api.Controllers
         [NonAction]
         private async Task<string> SaveImage(IFormFile file)
         {
-            // WebUI projesindeki images klasörünü hedefle
-            var imagesPath = Path.Combine(GetWebUIPath(), "images");
+            // 1. API'nin kendi içindeki wwwroot/images klasörünü hedefliyoruz
+            var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
-            if (!Directory.Exists(imagesPath)) Directory.CreateDirectory(imagesPath);
+            // Klasör yoksa oluştur (Plesk'te Yazma izni gerektirir)
+            if (!Directory.Exists(imagesPath))
+                Directory.CreateDirectory(imagesPath);
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
             var fullPath = Path.Combine(imagesPath, fileName);
@@ -89,6 +90,7 @@ namespace MapProject.Api.Controllers
                 await file.CopyToAsync(stream);
             }
 
+            // Veritabanına /images/dosya.jpg olarak kaydeder
             return "/images/" + fileName;
         }
 
@@ -96,13 +98,20 @@ namespace MapProject.Api.Controllers
         private void DeleteOldImage(string? imageUrl)
         {
             if (string.IsNullOrEmpty(imageUrl) || !imageUrl.StartsWith("/images/")) return;
+
             try
             {
-                // WebUI projesinin içinden dosyayı bul ve sil
-                var oldFilePath = Path.Combine(GetWebUIPath(), imageUrl.TrimStart('/'));
-                if (System.IO.File.Exists(oldFilePath)) System.IO.File.Delete(oldFilePath);
+                // 2. Silme işlemini de API'nin kendi wwwroot klasöründen yapıyoruz
+                var apiWwwroot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var oldFilePath = Path.Combine(apiWwwroot, imageUrl.TrimStart('/'));
+
+                if (System.IO.File.Exists(oldFilePath))
+                    System.IO.File.Delete(oldFilePath);
             }
-            catch { }
+            catch
+            {
+                // Loglama yapılabilir
+            }
         }
     }
 }

@@ -5,7 +5,6 @@ namespace MapProject.WebUI.Services.UserInformationService
 {
     public class UserInformationService : IUserInformationService
     {
-        private string BaseUrl = "https://reart-map-project-api.onrender.com";
         private readonly HttpClient _httpClient;
 
         public UserInformationService(HttpClient httpClient)
@@ -29,7 +28,7 @@ namespace MapProject.WebUI.Services.UserInformationService
                 content.Add(fileContent, "file", file.FileName);
             }
 
-            await _httpClient.PostAsync($"{BaseUrl}/api/UserInformations", content);
+            await _httpClient.PostAsync("api/UserInformations", content);
         }
 
         public async Task UpdateUserInformationDto(UpdateUserInformationDto dto, IFormFile? file)
@@ -53,23 +52,23 @@ namespace MapProject.WebUI.Services.UserInformationService
                 content.Add(fileContent, "file", file.FileName);
             }
 
-            var response = await _httpClient.PutAsync($"{BaseUrl}/api/UserInformations", content);
+            var response = await _httpClient.PutAsync("api/UserInformations", content);
             response.EnsureSuccessStatusCode(); // Hata varsa burada patlar, hatayı görürsün
         }
 
         public async Task<ResultUserInformationDto> GetUserInformation()
         {
-            return await _httpClient.GetFromJsonAsync<ResultUserInformationDto>($"{BaseUrl}/api/UserInformations");
+            return await _httpClient.GetFromJsonAsync<ResultUserInformationDto>("/api/UserInformations");
         }
 
         public async Task<UpdateUserInformationDto> GetByIdUserInformation(string id)
         {
-            return await _httpClient.GetFromJsonAsync<UpdateUserInformationDto>($"{BaseUrl}/api/UserInformations/{id}");
+            return await _httpClient.GetFromJsonAsync<UpdateUserInformationDto>($"api/UserInformations/{id}");
         }
 
         public async Task DeleteUserInformationDto(string id)
         {
-            await _httpClient.DeleteAsync($"{BaseUrl}/api/UserInformations/{id}");
+            await _httpClient.DeleteAsync($"api/UserInformations/{id}");
         }
     }
 }

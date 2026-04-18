@@ -1,0 +1,264 @@
+﻿@using MapProject.DtoLayer.DTOs.CoureselDto
+@model List<ResultCoureselDto>
+@inject IConfiguration Configuration
+@{ var apiBase = Configuration["ApiSettings:BaseUrl"]?.TrimEnd('/'); }
+
+<style>
+    /* ── Wrapper: sabit yükseklik ── */
+    #mapCarousel {
+        position: relative;
+    }
+
+    .carousel-inner {
+        height: 520px;
+    }
+
+    .carousel-item {
+        height: 100%;
+    }
+
+    /* ── Görsel: sabit boyut, Ken Burns zoom ── */
+    .map-carousel-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        filter: brightness(0.68);
+        transform: scale(1);
+        transition: transform 6s ease-out, filter 0.8s ease;
+        display: block;
+    }
+
+    .carousel-item.active .map-carousel-img {
+        transform: scale(1.06);
+    }
+
+    /* ── Altyazı: soldan kayarak giriş ── */
+    .map-carousel-caption {
+        position: absolute;
+        bottom: 2.5rem;
+        left: 8%;
+        right: auto;
+        padding: 1.4rem 1.8rem;
+        background: rgba(0, 0, 0, 0.45);
+        border-left: 4px solid #34cde2;
+        border-radius: 0 10px 10px 0;
+        text-align: left;
+        max-width: 500px;
+        opacity: 0;
+        transform: translateX(-50px);
+        transition: opacity 0.7s ease 0.4s, transform 0.7s ease 0.4s;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+
+    .carousel-item.active .map-carousel-caption {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .map-carousel-caption h4 {
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.35rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    .map-carousel-caption p {
+        color: #cff4fc;
+        margin-bottom: 0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* ── Progress bar ── */
+    .carousel-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        width: 0%;
+        background: linear-gradient(90deg, #34cde2, #0dcaf0);
+        z-index: 20;
+        border-radius: 0 2px 0 0;
+        box-shadow: 0 0 8px rgba(52,205,226,0.6);
+    }
+
+    /* ── Indicators ── */
+    #mapCarousel .carousel-indicators {
+        margin-bottom: 1rem;
+        gap: 6px;
+    }
+
+    #mapCarousel .carousel-indicators [data-bs-slide-to] {
+        width: 32px;
+        height: 4px;
+        border-radius: 2px;
+        background-color: rgba(255,255,255,0.5);
+        border: none;
+        opacity: 1;
+        transition: background-color 0.3s, width 0.3s;
+    }
+
+    #mapCarousel .carousel-indicators .active {
+        background-color: #34cde2;
+        width: 48px;
+    }
+
+    /* ── Oklar ── */
+    #mapCarousel .carousel-control-prev,
+    #mapCarousel .carousel-control-next {
+        width: 5%;
+    }
+
+    #mapCarousel .carousel-control-prev-icon,
+    #mapCarousel .carousel-control-next-icon {
+        background-color: rgba(0, 0, 0, 0.35);
+        border-radius: 50%;
+        padding: 1.3rem;
+        background-size: 50%;
+        transition: background-color 0.25s, transform 0.2s;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    #mapCarousel .carousel-control-prev:hover .carousel-control-prev-icon,
+    #mapCarousel .carousel-control-next:hover .carousel-control-next-icon {
+        background-color: rgba(52, 205, 226, 0.85);
+        transform: scale(1.1);
+    }
+
+    /* ── Bölüm başlığı ── */
+    .carousel-section-header .badge-line {
+        display: inline-block;
+        background: linear-gradient(135deg, #34cde2, #0dcaf0);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 0.35rem 1rem;
+        border-radius: 20px;
+        margin-bottom: 0.75rem;
+    }
+
+    .carousel-section-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+
+    /* ── Mobil ── */
+    @@media (max-width: 767.98px) {
+        .carousel-inner {
+            height: 280px;
+        }
+
+        .map-carousel-caption {
+            left: 5%;
+            padding: 0.9rem 1.1rem;
+            max-width: calc(100% - 10%);
+            bottom: 1.2rem;
+        }
+
+        .map-carousel-caption h4 {
+            font-size: 1rem;
+        }
+
+        .map-carousel-caption p {
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (min-width: 768px) and (max-width: 991.98px) {
+        .carousel-inner {
+            height: 380px;
+        }
+    }
+</style>
+
+<div class="container px-3 px-md-4 my-4 my-md-5">
+    <div class="text-center mx-auto mb-4 carousel-section-header">
+        <span class="badge-line">Reart Ajans</span>
+        <h2>Öne Çıkan Görseller</h2>
+    </div>
+
+    <div id="mapCarousel" class="carousel slide carousel-fade rounded-4 overflow-hidden shadow"
+         data-bs-ride="carousel" data-bs-interval="6000">
+
+        <!-- Indicators (dinamik) -->
+        <div class="carousel-indicators mb-2">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <button type="button" data-bs-target="#mapCarousel" data-bs-slide-to="@i"
+                        class="@(i == 0 ? "active" : "")"
+                        aria-current="@(i == 0 ? "true" : "false")"
+                        aria-label="Slayt @(i + 1)"></button>
+            }
+        </div>
+
+        <!-- Slides -->
+        <div class="carousel-inner">
+            @{ int index = 0; }
+            @foreach (var item in Model)
+            {
+                <div class="carousel-item @(index == 0 ? "active" : "")">
+                    <img src="@(apiBase + item.ImageUrl)"
+                         class="map-carousel-img"
+                         alt="@(item.Title ?? "Slayt görseli")">
+                    <div class="carousel-caption map-carousel-caption">
+                        <h4>@item.Title</h4>
+                        @if (!string.IsNullOrWhiteSpace(item.Descripton))
+                        {
+                            <p class="d-none d-sm-block">@item.Descripton</p>
+                        }
+                    </div>
+                </div>
+                index++;
+            }
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#mapCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Önceki</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mapCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Sonraki</span>
+        </button>
+
+        <!-- Progress bar -->
+        <div class="carousel-progress" id="carouselProgressBar"></div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var carousel = document.getElementById('mapCarousel');
+        var bar = document.getElementById('carouselProgressBar');
+        if (!carousel || !bar) return;
+
+        var duration = parseInt(carousel.getAttribute('data-bs-interval')) || 6000;
+
+        function resetBar() {
+            bar.style.transition = 'none';
+            bar.style.width = '0%';
+            void bar.offsetWidth; /* reflow */
+            bar.style.transition = 'width ' + (duration / 1000) + 's linear';
+            bar.style.width = '100%';
+        }
+
+        resetBar();
+
+        carousel.addEventListener('slide.bs.carousel', function () {
+            bar.style.transition = 'none';
+            bar.style.width = '0%';
+        });
+
+        carousel.addEventListener('slid.bs.carousel', function () {
+            resetBar();
+        });
+    })();
+</script>

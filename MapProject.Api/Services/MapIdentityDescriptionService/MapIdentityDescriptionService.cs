@@ -51,10 +51,7 @@ namespace MapProject.Api.Services.MapIdentityDescriptionService
         public async Task UpdateMapIdentityDescriptionDto(UpdateMapIdentityDescriptionDto dto)
         {
             var entity = _mapper.Map<MapIdentityDescription>(dto);
-            // Filtreleme: Id'si eşleşen dökümanı bul
             var filter = Builders<MapIdentityDescription>.Filter.Eq(x => x.Id, dto.Id);
-
-            // ReplaceOne kullanırken nesnenin ID'sinin filtredekiyle aynı olduğundan emin olun
             await _collection.ReplaceOneAsync(filter, entity);
         }
     }
