@@ -208,7 +208,21 @@
                asp-area="Admin" asp-controller="AdminUserInformation" asp-action="Index">
                 <i class="bi bi-person-badge"></i> Firma Bilgileri
             </a>
+
+            <div style="height:50px" class="mt-3">
+                <h5 style="color:white">Harita Görüntüleyici</h5>
+            </div>
+
+            <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "MapViewer" ? "active" : "")"
+               asp-area="Admin" asp-controller="AdminMapViewer" asp-action="Index">
+                <i class="bi bi-speedometer2"></i> Dijital Harita
+            </a>
+          
         </nav>
+
+     
+           
+        
 
         <div class="sidebar-footer">
             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">

@@ -3,6 +3,7 @@ using MapProject.Api.DTOs.CategoryDto;
 using MapProject.Api.DTOs.ContactDto;
 using MapProject.Api.DTOs.CoureselDto;
 using MapProject.Api.DTOs.MapIdentityDescriptionDto;
+using MapProject.Api.DTOs.MapViewerDto;
 using MapProject.Api.DTOs.UserIdentityDto;
 using MapProject.Api.DTOs.UserInformationDto;
 using MapProject.Api.DTOs.VisitorLogDto;
@@ -18,6 +19,11 @@ namespace MapProject.Api.Mapping
             CreateMap<Category, UpdateCategoryDto>().ReverseMap();
             CreateMap<Category, ResultCategoryDto>().ReverseMap();
             CreateMap<Category, GetByIdCategoryId>().ReverseMap();
+
+            CreateMap<MapViewer, ResultMapViewerDto>().ReverseMap();
+            CreateMap<MapViewer, UpdateMapViewerDto>().ReverseMap();
+            CreateMap<MapViewer, CreateMapViewerDto>().ReverseMap();
+            CreateMap<MapViewer, GetByIdMapViewerDto>().ReverseMap();
 
             CreateMap<Couresel, CreateCoureselDto>().ReverseMap();
             CreateMap<Couresel, UpdateCoureselDto>().ReverseMap();

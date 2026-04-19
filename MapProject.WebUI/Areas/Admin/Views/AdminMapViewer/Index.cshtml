@@ -1,0 +1,140 @@
+@model List<ResultMapViewerDto>
+@using MapProject.DtoLayer.DTOs.MapViewerDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Harita Görüntüleyiciler";
+    ViewData["ActiveMenu"] = "MapViewer";
+    string apiUrl = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
+}
+
+<style>
+    @@media (max-width: 767.98px) {
+        .map-table-wrap { display: none; }
+        .map-cards-wrap { display: block; }
+    }
+    @@media (min-width: 768px) {
+        .map-table-wrap { display: block; }
+        .map-cards-wrap { display: none; }
+    }
+    .map-card {
+        background: #fff;
+        border-radius: 0.6rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.08);
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    .map-thumb {
+        width: 80px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+    }
+    .map-table-thumb {
+        width: 100px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-map me-2 text-primary"></i>Harita Görüntüleyiciler</span>
+        <a asp-area="Admin" asp-controller="AdminMapViewer" asp-action="Create"
+           class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Yeni Harita Ekle
+        </a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-map fs-1 d-block mb-2"></i>Henüz harita yok.
+            </div>
+        }
+        else
+        {
+            <div class="map-table-wrap">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Görsel</th>
+                                <th>Başlık</th>
+                                <th>Url</th>
+                                <th style="width:110px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@(apiUrl + item.ImageUrl)" class="map-table-thumb" alt="" />
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">Yok</span>
+                                        }
+                                    </td>
+                                    <td class="fw-medium">@item.Title</td>
+                                   <td>
+                                       <a href="@item.Url">@item.Url</a>
+                                   </td>
+                                    <td>
+                                        <div class="d-flex gap-1 justify-content-end">
+                                            <a asp-area="Admin" asp-controller="AdminMapViewer" asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="AdminMapViewer" asp-action="Delete"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="map-cards-wrap p-3">
+                @foreach (var item in Model)
+                {
+                    <div class="map-card">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@(apiUrl + item.ImageUrl)" class="map-thumb" alt="" />
+                            }
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-semibold text-truncate">@item.Title</div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end pt-1 border-top">
+                            <a asp-area="Admin" asp-controller="AdminMapViewer" asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-pencil"></i> Düzenle
+                            </a>
+                            <a asp-area="Admin" asp-controller="AdminMapViewer" asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-danger btn-sm"
+                               onclick="return confirm('Bu haritayı silmek istediğinize emin misiniz?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

@@ -5,6 +5,7 @@ using MapProject.Api.Services.ContactService;
 using MapProject.Api.Services.CourselService;
 using MapProject.Api.Services.IdentityService;
 using MapProject.Api.Services.MapIdentityDescriptionService;
+using MapProject.Api.Services.MapViewerService;
 using MapProject.Api.Services.UserInformationService;
 using MapProject.Api.Services.VisitorLogService;
 using MapProject.Api.Settings;
@@ -72,6 +73,7 @@ builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IMapIdentityDescriptionService, MapIdentityDescriptionService>();
 builder.Services.AddScoped<IVisitorLogService, VisitorLogService>();
 builder.Services.AddScoped<ICoureselService, CoureselService>();
+builder.Services.AddScoped<IMapViewerService, MapViewerService>();
 
 
 

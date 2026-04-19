@@ -1,0 +1,70 @@
+@model UpdateMapViewerDto
+@using MapProject.DtoLayer.DTOs.MapViewerDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Harita Düzenle";
+    ViewData["ActiveMenu"] = "MapViewer";
+    string apiUrl = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-pencil-square me-2 text-primary"></i>Harita Düzenle</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-area="Admin" asp-controller="AdminMapViewer" asp-action="Edit"
+                      method="post" enctype="multipart/form-data">
+                    <input asp-for="Id" type="hidden" />
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold">Başlık</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    
+
+                    <hr class="text-muted mb-4" />
+                    <h6 class="mb-3 text-secondary">Harita Görseli</h6>
+
+                    <div class="text-center mb-4">
+                        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : apiUrl + Model.ImageUrl)"
+                             id="preview1"
+                             class="img-fluid rounded border mb-3 shadow-sm"
+                             style="width:100%; max-height:220px; object-fit:cover; background:#f8f9fa;" />
+                        <input type="file" name="file1" id="file1" class="d-none" accept="image/*"
+                               onchange="updatePreview(this,'preview1')" />
+                        <button type="button" class="btn btn-outline-primary"
+                                onclick="document.getElementById('file1').click()">
+                            <i class="bi bi-camera me-1"></i> Görsel Değiştir
+                        </button>
+                        <input asp-for="ImageUrl" type="hidden" />
+                    </div>
+
+                    <div class="pt-3 border-top d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-save me-2"></i>Değişiklikleri Kaydet
+                        </button>
+                        <a asp-action="Index" class="btn btn-light px-4 border">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updatePreview(input, previewId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(previewId).setAttribute('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

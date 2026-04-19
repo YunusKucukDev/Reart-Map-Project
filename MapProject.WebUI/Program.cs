@@ -9,6 +9,7 @@ using MapProject.WebUI.Services.CoureselService;
 using MapProject.WebUI.Services.VisitorLogService;
 using MapProject.WebUI.Services.VisitorService;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MapProject.WebUI.Services.MapViewerService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,7 @@ builder.Services.AddHttpClient<IMapIdentityDescriptionService, MapIdentityDescri
 builder.Services.AddHttpClient<IUserInformationService, UserInformationService>(opt => opt.BaseAddress = apiUri);
 builder.Services.AddHttpClient<IIdentityService, IdentityService>(opt => opt.BaseAddress = apiUri);
 builder.Services.AddHttpClient<IVisitorLogService, VisitorLogService>(opt => opt.BaseAddress = apiUri);
+builder.Services.AddHttpClient<IMapViewerService, MapViewerService>(opt => opt.BaseAddress = apiUri);
 builder.Services.AddHttpClient<ICoureselService, CoureselService>(opt => opt.BaseAddress = apiUri);
 
 // 5. Uygulama Olu�turma
