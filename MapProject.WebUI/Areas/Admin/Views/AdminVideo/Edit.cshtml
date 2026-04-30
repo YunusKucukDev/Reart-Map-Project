@@ -1,0 +1,184 @@
+@model MapProject.DtoLayer.DTOs.VideoDto.UpdateVideoDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Video Düzenle";
+    ViewData["ActiveMenu"] = "Video";
+    string apiUrl = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
+    string currentThumb = !string.IsNullOrEmpty(Model.ThumbnailUrl)
+        ? apiUrl + Model.ThumbnailUrl : "/images/no-image.png";
+    string currentVideo = !string.IsNullOrEmpty(Model.VideoUrl)
+        ? apiUrl + Model.VideoUrl : "";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm @(Model.IsFeatured ? "border-warning" : "")">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0">
+                    @if (Model.IsFeatured)
+                    {
+                        <i class="bi bi-star-fill me-2 text-warning"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-pencil-square me-2 text-primary"></i>
+                    }
+                    Video Düzenle
+                    @if (Model.IsFeatured)
+                    {
+                        <span class="badge bg-warning text-dark ms-2 small">Öne Çıkan</span>
+                    }
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-area="Admin" asp-controller="AdminVideo" asp-action="Edit"
+                      method="post" enctype="multipart/form-data">
+                    <input asp-for="Id" type="hidden" />
+                    <input asp-for="IsFeatured" type="hidden" />
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="Title" class="form-label fw-bold">Başlık</label>
+                            <input asp-for="Title" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Tag" class="form-label fw-bold">Etiket</label>
+                            <input asp-for="Tag" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Duration" class="form-label fw-bold">Süre</label>
+                            <input asp-for="Duration" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Order" class="form-label fw-bold">Sıra</label>
+                            <input asp-for="Order" class="form-control" type="number" min="0" />
+                        </div>
+                    </div>
+
+                    <hr class="text-muted mb-4" />
+
+                    <!-- Mevcut video + yeni video yükleme -->
+                    <h6 class="mb-3 text-secondary"><i class="bi bi-camera-video me-1"></i>Video Dosyası</h6>
+                    @if (!string.IsNullOrEmpty(currentVideo))
+                    {
+                        <div class="mb-3">
+                            <p class="small text-muted mb-1">Mevcut video:</p>
+                            <video src="@currentVideo" controls class="w-100 rounded" style="max-height:220px;"></video>
+                        </div>
+                    }
+
+                    <div class="mb-4">
+                        <div id="videoDropZone" class="border border-2 border-dashed rounded-3 p-3 text-center"
+                             style="cursor:pointer; border-color:#ced4da !important; transition:border-color .2s;">
+                            <i class="bi bi-arrow-repeat me-1 text-muted"></i>
+                            <span class="small text-muted">Değiştirmek için yeni video seçin (boş bırakırsanız mevcut korunur)</span>
+                            <input type="file" name="videoFile" id="videoFile" class="d-none"
+                                   accept="video/*" onchange="handleVideoSelect(this)" />
+                        </div>
+                        <div id="videoInfo" class="mt-2 d-none">
+                            <div class="d-flex align-items-center gap-2 p-2 bg-light rounded">
+                                <i class="bi bi-file-play text-primary fs-5"></i>
+                                <span id="videoFileName" class="small fw-medium flex-grow-1 text-truncate"></span>
+                                <span id="videoFileSize" class="small text-muted"></span>
+                                <button type="button" class="btn btn-sm btn-outline-danger py-0" onclick="clearVideo()">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                <video id="videoPreview" controls class="w-100 rounded" style="max-height:180px;"></video>
+                            </div>
+                        </div>
+                    </div>
+                    <input asp-for="VideoUrl" type="hidden" />
+
+                    <!-- Thumbnail -->
+                    <h6 class="mb-2 text-secondary"><i class="bi bi-image me-1"></i>Kapak Görseli</h6>
+                    <div class="text-center mb-4">
+                        <img src="@currentThumb" id="thumbPreview"
+                             class="img-fluid rounded border mb-3 shadow-sm"
+                             style="width:100%; max-height:180px; object-fit:cover;" />
+                        <input type="file" name="thumbnailFile" id="thumbnailFile" class="d-none"
+                               accept="image/*" onchange="updateThumbPreview(this)" />
+                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                onclick="document.getElementById('thumbnailFile').click()">
+                            <i class="bi bi-image me-1"></i>Kapak Değiştir
+                        </button>
+                        <input asp-for="ThumbnailUrl" type="hidden" />
+                    </div>
+
+                    <div class="pt-3 border-top d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-save me-1"></i>Kaydet
+                        </button>
+                        <a asp-action="Index" class="btn btn-light px-4 border">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    var dropZone = document.getElementById('videoDropZone');
+    var fileInput = document.getElementById('videoFile');
+
+    dropZone.addEventListener('click', function () { fileInput.click(); });
+    dropZone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        dropZone.style.borderColor = '#0d6efd';
+        dropZone.style.background = '#f0f4ff';
+    });
+    dropZone.addEventListener('dragleave', function () {
+        dropZone.style.borderColor = '#ced4da';
+        dropZone.style.background = '';
+    });
+    dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropZone.style.borderColor = '#ced4da';
+        dropZone.style.background = '';
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            handleVideoSelect(fileInput);
+        }
+    });
+
+    function handleVideoSelect(input) {
+        if (!input.files || !input.files[0]) return;
+        var file = input.files[0];
+        document.getElementById('videoFileName').textContent = file.name;
+        document.getElementById('videoFileSize').textContent = formatSize(file.size);
+        document.getElementById('videoInfo').classList.remove('d-none');
+        document.getElementById('videoPreview').src = URL.createObjectURL(file);
+    }
+
+    function clearVideo() {
+        fileInput.value = '';
+        document.getElementById('videoInfo').classList.add('d-none');
+        document.getElementById('videoPreview').src = '';
+    }
+
+    function formatSize(bytes) {
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function updateThumbPreview(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('thumbPreview').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+}

@@ -1,7 +1,7 @@
 ﻿<div class="container">
     <nav class="navbar navbar-expand-lg bg-white navbar-light py-2 py-lg-0">
         <a href="/home/index" class="navbar-brand">
-            <h1 class="m-0 text-uppercase text-primary"><img src="~/reart ajans logo web.jpg" style="border:none; height:auto; max-height:140px; width:auto; max-width:440px;" alt="ReArt Ajans" /></h1>
+            <img src="~/reart ajans logo web.jpg" class="navbar-brand-logo" alt="ReArt Ajans" />
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
@@ -10,8 +10,18 @@
             <div class="navbar-nav ms-auto py-0">
                 <a href="/home/index" class="nav-item nav-link">Anasayfa</a>
                 <a href="/MapIdentityDescription/index" class="nav-item nav-link">Harita nedir?</a>
-                <a href="/category/index" class="nav-link" >Haritalarımız</a>
+                <a href="/category/index" class="nav-link">Haritalarımız</a>
+
+                <div class="nav-item nav-link position-relative pe-4" style="cursor: default; color: #f4711d;">
+                    E-Mağaza
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
+                          style="font-size: 0.65rem; margin-top: 1px; margin-left: -15px;">
+                        Yakında
+                    </span>
+                </div>
+
                 <a href="/contact" class="nav-item nav-link">İletişim</a>
+
                 @if (Context.User.Identity?.IsAuthenticated == true)
                 {
                     <a href="/Admin/AdminDashboard/Index" class="nav-item nav-link text-primary fw-medium">

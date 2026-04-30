@@ -9,5 +9,6 @@ namespace MapProject.Api.Services.MapViewerService
         Task UpdateMapViewer(UpdateMapViewerDto dto);
         Task DeleteMapViewer(string id);
         Task CreateMapViewer(CreateMapViewerDto dto);
+        Task<int> IncrementViewCountAsync(string id);
     }
 }

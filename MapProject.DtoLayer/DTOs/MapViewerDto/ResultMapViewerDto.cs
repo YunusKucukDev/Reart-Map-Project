@@ -6,5 +6,6 @@
         public string Title { get; set; }
         public string ImageUrl { get; set; } // Sunucuda kayıtlı ismi
         public string Url { get; set; }
+        public int ViewCount { get; set; }
     }
 }

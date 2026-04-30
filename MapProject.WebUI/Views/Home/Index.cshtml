@@ -8,51 +8,25 @@
     <div class="container py-5">
         <div class="row justify-content-start">
             <div class="col-lg-8 text-start">
-                <h1 class="display-1 text-white mb-md-4">Haritaya dair her şey..</h1>
+                <h1 class="text-white mb-md-4" style="font-size: clamp(1.8rem, 7vw, 5rem); font-weight: 700; line-height: 1.15;">Haritaya dair her şey..</h1>
 
-                <div class="pt-2 d-flex flex-wrap gap-3 justify-content-start">
-
-                    <a href="#" class="btn btn-primary" style="background-color: #34cde2; border-color: #34cde2; color: black; font-weight:bold;">
-                        Fikirlerinizi Paylaşın
-                    </a>
-
-                    <div class="position-relative d-inline-block">
-                        <a href="#!" style="background-color: #34cde2; border-color: #34cde2; color: black; font-weight:bold;" class="disabled btn btn-primary">E-Ticaret Mağazamız</a>
-                        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem; z-index: 1; white-space: nowrap;">
-                            Yakında
-                        </span>
-                    </div>
-
-                    <div class="position-relative d-inline-block">
-                        <a href="#!" style="background-color: #34cde2; border-color: #34cde2; color: black; font-weight:bold;" class="disabled btn btn-primary">Reart Prodüksiyon</a>
-                        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem; z-index: 1; white-space: nowrap;">
-                            Yakında
-                        </span>
-                    </div>
+                <div class="pt-2 d-flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@await Component.InvokeAsync("HomeAbout") @*About*@
 
-<!-- Carousel Start -->
-@await Component.InvokeAsync("CoureselSection") @*FavoriteMaps*@
-<!-- Carousel End -->
+@await Component.InvokeAsync("HomeAbout")
 
-<!-- Pricing Plan Start -->
-@await Component.InvokeAsync("HomeFavoriteMaps") @*FavoriteMaps*@
-<!-- Pricing Plan End -->
-<!-- About Start -->
+@await Component.InvokeAsync("CoureselSection")
 
-<!-- About End -->
-<!-- İletişim Start -->
-@await Component.InvokeAsync("HomeContact") @*Contact*@
-<!-- İletişim End -->
-<!-- Team Start -->
-@await Component.InvokeAsync("HomeCategoryList") @*Categories*@
-<!-- Team End -->
-<!-- Work Process Start -->
-@await Component.InvokeAsync("HomeWorkProcess") @*WorkProcess*@
-<!-- Work Process End -->
+@await Component.InvokeAsync("HomeVideoSection")
+
+@await Component.InvokeAsync("HomeFavoriteMaps")
+
+@await Component.InvokeAsync("HomeContact")
+
+@await Component.InvokeAsync("HomeCategoryList")
+

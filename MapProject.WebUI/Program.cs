@@ -6,6 +6,7 @@ using MapProject.WebUI.Services.IdentityService;
 using MapProject.WebUI.Services.MapIdentityDescriptionService;
 using MapProject.WebUI.Services.UserInformationService;
 using MapProject.WebUI.Services.CoureselService;
+using MapProject.WebUI.Services.VideoService;
 using MapProject.WebUI.Services.VisitorLogService;
 using MapProject.WebUI.Services.VisitorService;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -34,8 +35,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "MapProject.Cookie";
     });
 
-// 4. API Ba�lant� Ayarlar� (HttpClient Factory)
-// appsettings.json dosyan�zdaki "ApiSettings:BaseUrl" de�erini okur.
 var apiUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
 
 builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt => opt.BaseAddress = apiUri);
@@ -46,6 +45,7 @@ builder.Services.AddHttpClient<IIdentityService, IdentityService>(opt => opt.Bas
 builder.Services.AddHttpClient<IVisitorLogService, VisitorLogService>(opt => opt.BaseAddress = apiUri);
 builder.Services.AddHttpClient<IMapViewerService, MapViewerService>(opt => opt.BaseAddress = apiUri);
 builder.Services.AddHttpClient<ICoureselService, CoureselService>(opt => opt.BaseAddress = apiUri);
+builder.Services.AddHttpClient<IVideoService, VideoService>(opt => opt.BaseAddress = apiUri);
 
 // 5. Uygulama Olu�turma
 var app = builder.Build();

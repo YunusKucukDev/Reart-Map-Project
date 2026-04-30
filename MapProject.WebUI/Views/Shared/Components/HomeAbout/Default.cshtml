@@ -8,46 +8,42 @@
 
 <div class="container-fluid py-5">
     <div class="container">
-        <div class="row gx-5">
-            <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
-                <div class="position-relative h-100">
-                    <img class="position-absolute w-100 h-100 rounded" src="@_img(Model.Image)"
+        <div class="row justify-content-center">
+            <div class="col-12 mb-5">
+                <div class="position-relative w-100" style="height: 400px;">
+                    <img class="w-100 h-100 rounded" src="@_img(Model.Image)" alt="Reart Ajans"
                          style="object-fit: cover;">
                 </div>
             </div>
-            <div class="col-lg-7">
-                <div class="mb-4">
+
+            <div class="col-lg-10">
+                <div class="mb-4 text-center">
                     <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">Reart Ajans</h5>
-                    <h1 class="display-4">@Model.Title</h1>
+                    <h1 class="display-4 mt-2">@Model.Title</h1>
                 </div>
-                <p style="overflow-wrap: break-word; word-wrap: break-word; white-space: normal; text-align: justify;">
+
+                <p class="mb-5" style="overflow-wrap: break-word; text-align: justify; line-height: 1.8; font-size: 1.1rem;">
                     @Model.Description
                 </p>
-                <div class="row g-3 pt-3">
-                    <div class="col-sm-3 col-6">
-                        <div class="bg-light text-center rounded-circle py-4">
-                            <i class="fa-solid fa-3x text-primary mb-3 fa-tags" style="color: rgb(116, 192, 252);"></i>
-                            <h6 class="mb-0">Uygun Fiyat</h6>
-                        </div>
-                    </div>
 
+                <div class="row g-3 pt-3 justify-content-center">
                     <div class="col-sm-3 col-6">
-                        <div class="bg-light text-center rounded-circle py-4">
-                            <i class="fa-solid fa-3x text-primary mb-3 fa-user-shield" style="color: rgb(116, 192, 252);"></i>
+                        <div class="bg-light text-center rounded-circle py-4 shadow-sm">
+                            <i class="fa-solid fa-3x mb-3 fa-user-shield" style="color: rgb(116, 192, 252);"></i>
                             <h6 class="mb-0">Müşteri Memnuniyeti</h6>
                         </div>
                     </div>
 
                     <div class="col-sm-3 col-6">
-                        <div class="bg-light text-center rounded-circle py-4">
-                            <i class="fa-solid fa-3x text-primary mb-3 fa-print" style="color: rgb(116, 192, 252);"></i>
+                        <div class="bg-light text-center rounded-circle py-4 shadow-sm">
+                            <i class="fa-solid fa-3x mb-3 fa-print" style="color: rgb(116, 192, 252);"></i>
                             <h6 class="mb-0">Kaliteli Baskı</h6>
                         </div>
                     </div>
 
                     <div class="col-sm-3 col-6">
-                        <div class="bg-light text-center rounded-circle py-4">
-                            <i class="fa-solid fa-3x text-primary mb-3 fa-pen-nib" style="color: rgb(116, 192, 252);"></i>
+                        <div class="bg-light text-center rounded-circle py-4 shadow-sm">
+                            <i class="fa-solid fa-3x mb-3 fa-pen-nib" style="color: rgb(116, 192, 252);"></i>
                             <h6 class="mb-0">Özel Tasarım</h6>
                         </div>
                     </div>

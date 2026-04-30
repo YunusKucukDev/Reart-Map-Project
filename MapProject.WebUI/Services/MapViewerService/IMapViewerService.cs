@@ -9,5 +9,6 @@ namespace MapProject.WebUI.Services.MapViewerService
         Task UpdateMapViewer(UpdateMapViewerDto dto, IFormFile? file1);
         Task DeleteMapViewer(string id);
         Task CreateMapViewer(CreateMapViewerDto dto, IFormFile? file1);
+        Task<int> IncrementViewCountAsync(string id);
     }
 }

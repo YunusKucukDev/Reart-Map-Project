@@ -58,7 +58,7 @@ namespace MapProject.WebUI.Services.UserInformationService
 
         public async Task<ResultUserInformationDto> GetUserInformation()
         {
-            return await _httpClient.GetFromJsonAsync<ResultUserInformationDto>("/api/UserInformations");
+            return await _httpClient.GetFromJsonAsync<ResultUserInformationDto>("api/UserInformations");
         }
 
         public async Task<UpdateUserInformationDto> GetByIdUserInformation(string id)

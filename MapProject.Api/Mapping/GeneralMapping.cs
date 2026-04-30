@@ -6,6 +6,7 @@ using MapProject.Api.DTOs.MapIdentityDescriptionDto;
 using MapProject.Api.DTOs.MapViewerDto;
 using MapProject.Api.DTOs.UserIdentityDto;
 using MapProject.Api.DTOs.UserInformationDto;
+using MapProject.Api.DTOs.VideoDto;
 using MapProject.Api.DTOs.VisitorLogDto;
 using MapProject.Api.Entities;
 
@@ -44,6 +45,10 @@ namespace MapProject.Api.Mapping
 
             CreateMap<VisitorLog, CreateVisitorLogDto>().ReverseMap();
             CreateMap<VisitorLog, ResultVisitorLogDto>().ReverseMap();
+
+            CreateMap<Video, CreateVideoDto>().ReverseMap();
+            CreateMap<Video, UpdateVideoDto>().ReverseMap();
+            CreateMap<Video, ResultVideoDto>().ReverseMap();
         }
     }
 }

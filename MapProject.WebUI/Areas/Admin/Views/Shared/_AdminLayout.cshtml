@@ -200,6 +200,10 @@
                asp-area="Admin" asp-controller="AdminCouresel" asp-action="Index">
                 <i class="bi bi-images"></i> Carousel
             </a>
+            <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "Video" ? "active" : "")"
+               asp-area="Admin" asp-controller="AdminVideo" asp-action="Index">
+                <i class="bi bi-play-circle"></i> Videolar
+            </a>
             <a class="nav-link @(ViewData["ActiveMenu"]?.ToString() == "Contact" ? "active" : "")"
                asp-area="Admin" asp-controller="AdminContact" asp-action="Index">
                 <i class="bi bi-envelope"></i> Mesajlar

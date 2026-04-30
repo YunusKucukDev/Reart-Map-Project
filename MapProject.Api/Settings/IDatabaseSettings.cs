@@ -15,5 +15,6 @@
         public string UsersIdentityCollectionName { get; set; }
         public string RolesIdentityCollectionName { get; set; }
         public string VisitorLogCollectionName { get; set; }
+        public string VideoCollectionName { get; set; }
     }
 }

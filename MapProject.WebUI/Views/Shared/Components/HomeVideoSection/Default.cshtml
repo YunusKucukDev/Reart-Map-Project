@@ -1,0 +1,190 @@
+@using MapProject.WebUI.ViewComponents.Home
+@model HomeVideoSectionViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    string apiBase = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
+    string thumb(MapProject.DtoLayer.DTOs.VideoDto.ResultVideoDto v) => !string.IsNullOrEmpty(v.ThumbnailUrl) ? apiBase + v.ThumbnailUrl : "";
+    string videoSrc(MapProject.DtoLayer.DTOs.VideoDto.ResultVideoDto v) => !string.IsNullOrEmpty(v.VideoUrl) ? apiBase + v.VideoUrl : "";
+}
+
+<div class="container-fluid py-5" style="background: radial-gradient(circle at 50% 50%, #13c5dd 0%, #0a6b79 100%);">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h5 class="text-white text-uppercase tracking-wider mb-2" style="letter-spacing: 3px;">Reart Ajans</h5>
+            <h1 class="display-4 text-white fw-bold mb-4">Video Dünyamız</h1>
+            <div class="mx-auto" style="width: 80px; height: 4px; background: #fff; border-radius: 2px;"></div>
+        </div>
+
+        @if (Model.Featured != null)
+        {
+            <div class="featured-card" data-video-src="@videoSrc(Model.Featured)" data-video-title="@Model.Featured.Title">
+                <img src="@thumb(Model.Featured)" alt="@Model.Featured.Title" class="featured-img" />
+                <div class="featured-overlay"></div>
+                <div class="featured-content">
+                    <div class="glass-box">
+                        <h2 class="display-5 fw-bold text-white mb-3">@Model.Featured.Title</h2>
+                        <p class="text-white opacity-75 mb-4" style="max-width: 600px;">@Model.Featured.Description</p>
+                        <button class="btn btn-light px-4 py-2 fw-bold text-primary rounded-pill">
+                            <i class="fa fa-play me-2"></i> Videoyu İzle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="row g-4 mt-4">
+            @foreach (var video in Model.Videos.Take(3))
+            {
+                <div class="col-md-4">
+                    <div class="video-item" data-video-src="@videoSrc(video)" data-video-title="@video.Title">
+                        <div class="thumb-wrap">
+                            <img src="@thumb(video)" alt="@video.Title" />
+                            <div class="hover-glow"></div>
+                            <div class="play-trigger"><i class="fa fa-play"></i></div>
+                        </div>
+                        <div class="p-4 bg-white text-center">
+                            <small class="text-primary fw-bold text-uppercase d-block mb-1">@video.Tag</small>
+                            <h6 class="text-dark fw-bold m-0">@video.Title</h6>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Featured Card */
+    .featured-card {
+        position: relative;
+        height: 500px;
+        border-radius: 25px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .featured-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+    }
+
+    .featured-card:hover .featured-img {
+        transform: scale(1.05);
+    }
+
+    .featured-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    }
+
+    .featured-content {
+        position: absolute;
+        bottom: 50px;
+        left: 50px;
+        z-index: 2;
+    }
+
+    .glass-box {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(20px);
+        padding: 35px;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Video Item Cards */
+    .video-item {
+        border-radius: 20px;
+        overflow: hidden;
+        background: white;
+        transition: 0.4s;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        cursor: pointer;
+    }
+
+        .video-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+    .thumb-wrap {
+        height: 180px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .thumb-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .play-trigger {
+        position: absolute;
+        inset: 0;
+        background: rgba(19,197,221,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: 0.3s;
+        color: white;
+        font-size: 24px;
+    }
+
+    .video-item:hover .play-trigger {
+        opacity: 1;
+    }
+
+    /* Modal */
+    .vc-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0,0,0,0.95);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .vc-modal-content {
+        width: 100%;
+        max-width: 900px;
+    }
+</style>
+
+<div id="vcLightbox" class="vc-modal">
+    <div class="vc-modal-content">
+        <div class="d-flex justify-content-between text-white mb-3">
+            <span id="vcTitle" class="h4 fw-bold"></span>
+            <span id="vcClose" style="cursor:pointer; font-size:30px;">&times;</span>
+        </div>
+        <video id="vcVideo" controls class="w-100 shadow-lg rounded-3" style="background:#000;"></video>
+    </div>
+</div>
+
+<script>
+    const items = document.querySelectorAll('[data-video-src]');
+    const modal = document.getElementById('vcLightbox');
+    const video = document.getElementById('vcVideo');
+    const title = document.getElementById('vcTitle');
+    const close = document.getElementById('vcClose');
+
+    items.forEach(el => {
+        el.addEventListener('click', function() {
+            video.src = this.dataset.videoSrc;
+            title.innerText = this.dataset.videoTitle;
+            modal.style.display = 'flex';
+            video.play();
+        });
+    });
+
+    const hide = () => { modal.style.display='none'; video.pause(); video.src=""; };
+    close.onclick = hide;
+    modal.onclick = (e) => { if(e.target === modal) hide(); };
+</script>

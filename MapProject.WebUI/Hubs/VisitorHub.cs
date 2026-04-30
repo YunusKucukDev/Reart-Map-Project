@@ -16,7 +16,6 @@ namespace MapProject.WebUI.Hubs
             _logService = logService;
         }
 
-        // Public site tarafından çağrılır
         public async Task RegisterVisitor()
         {
             _tracker.Add(Context.ConnectionId);
@@ -24,7 +23,6 @@ namespace MapProject.WebUI.Hubs
             var ip = Context.GetHttpContext()?.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var ua = Context.GetHttpContext()?.Request.Headers["User-Agent"].ToString() ?? "unknown";
 
-            // Veritabanına kaydet (fire-and-forget; hata olursa sistemi bloklamaz)
             _ = Task.Run(async () =>
             {
                 try
@@ -36,13 +34,12 @@ namespace MapProject.WebUI.Hubs
                         UserAgent = ua
                     });
                 }
-                catch { /* loglama eklenebilir */ }
+                catch { }
             });
 
             await Clients.Group("admins").SendAsync("UpdateVisitorCount", _tracker.Count);
         }
 
-        // Admin panel tarafından çağrılır
         public async Task RegisterAdmin()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, "admins");
@@ -53,9 +50,8 @@ namespace MapProject.WebUI.Hubs
         {
             bool wasVisitor = _tracker.Remove(Context.ConnectionId);
             if (wasVisitor)
-            {
                 await Clients.Group("admins").SendAsync("UpdateVisitorCount", _tracker.Count);
-            }
+
             await base.OnDisconnectedAsync(exception);
         }
     }

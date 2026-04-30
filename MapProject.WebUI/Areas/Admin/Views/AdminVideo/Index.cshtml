@@ -1,0 +1,204 @@
+@using MapProject.DtoLayer.DTOs.VideoDto
+@model List<ResultVideoDto>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Videolar";
+    ViewData["ActiveMenu"] = "Video";
+    string apiUrl = (Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000").TrimEnd('/');
+    var featured = ViewBag.Featured as ResultVideoDto;
+    string thumb(ResultVideoDto v) => !string.IsNullOrEmpty(v.ThumbnailUrl) ? apiUrl + v.ThumbnailUrl : "/images/no-image.png";
+}
+
+<style>
+    .video-thumb { width: 100px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0; }
+    .featured-thumb { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; }
+    @@media (max-width: 767.98px) {
+        .vid-table-wrap { display: none; }
+        .vid-cards-wrap { display: block; }
+    }
+    @@media (min-width: 768px) {
+        .vid-table-wrap { display: block; }
+        .vid-cards-wrap { display: none; }
+    }
+    .vid-card { background:#fff; border-radius:.6rem; box-shadow:0 1px 4px rgba(0,0,0,.08); padding:1rem; margin-bottom:.75rem; }
+</style>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning d-flex align-items-center gap-2 mb-3">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>@TempData["Error"]</span>
+    </div>
+}
+
+<!-- Öne Çıkan Video -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-star-fill me-2 text-warning"></i>Öne Çıkan Video (Büyük Kart)</span>
+        <a asp-area="Admin" asp-controller="AdminVideo" asp-action="CreateFeatured"
+           class="btn btn-warning btn-sm text-dark fw-semibold">
+            <i class="bi bi-plus-lg me-1"></i>Öne Çıkan Değiştir
+        </a>
+    </div>
+    <div class="card-body">
+        @if (featured == null)
+        {
+            <div class="text-center text-muted py-4">
+                <i class="bi bi-star fs-1 d-block mb-2"></i>
+                Henüz öne çıkan video yok. Yukarıdaki butona tıklayarak ekleyin.
+            </div>
+        }
+        else
+        {
+            <div class="row align-items-center g-3">
+                <div class="col-md-5">
+                    <img src="@thumb(featured)" class="featured-thumb" alt="@featured.Title" />
+                </div>
+                <div class="col-md-7">
+                    @if (!string.IsNullOrEmpty(featured.Tag))
+                    {
+                        <span class="badge bg-info text-dark mb-2">@featured.Tag</span>
+                    }
+                    <h5 class="mb-1">@featured.Title</h5>
+                    <p class="text-muted small mb-2">@featured.Description</p>
+                    <div class="d-flex gap-3 text-muted small mb-3">
+                        @if (!string.IsNullOrEmpty(featured.YoutubeVideoId))
+                        {
+                            <span><i class="bi bi-youtube me-1 text-danger"></i>@featured.YoutubeVideoId</span>
+                        }
+                        @if (!string.IsNullOrEmpty(featured.Duration))
+                        {
+                            <span><i class="bi bi-clock me-1"></i>@featured.Duration</span>
+                        }
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a asp-area="Admin" asp-controller="AdminVideo" asp-action="Edit"
+                           asp-route-id="@featured.Id"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil me-1"></i>Düzenle
+                        </a>
+                        <a asp-area="Admin" asp-controller="AdminVideo" asp-action="Delete"
+                           asp-route-id="@featured.Id"
+                           class="btn btn-outline-danger btn-sm"
+                           onclick="return confirm('Öne çıkan videoyu silmek istiyor musunuz?')">
+                            <i class="bi bi-trash me-1"></i>Sil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Normal Videolar -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-play-circle me-2 text-primary"></i>Videolar</span>
+        <a asp-area="Admin" asp-controller="AdminVideo" asp-action="Create"
+           class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Yeni Video
+        </a>
+    </div>
+    <div class="card-body p-0">
+        @{
+            var normalVideos = Model?.Where(v => !v.IsFeatured).ToList() ?? new();
+        }
+        @if (!normalVideos.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-play-circle fs-1 d-block mb-2"></i>Henüz video yok.
+            </div>
+        }
+        else
+        {
+            <div class="vid-table-wrap">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Thumbnail</th>
+                                <th>Başlık</th>
+                                <th>YouTube ID</th>
+                                <th>Etiket</th>
+                                <th>Süre</th>
+                                <th>Sıra</th>
+                                <th style="width:160px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in normalVideos.OrderBy(v => v.Order))
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@thumb(item)" class="video-thumb" alt="" />
+                                    </td>
+                                    <td class="fw-medium">@item.Title</td>
+                                    <td class="text-muted small font-monospace">@item.YoutubeVideoId</td>
+                                    <td>@(item.Tag ?? "—")</td>
+                                    <td>@(item.Duration ?? "—")</td>
+                                    <td>@item.Order</td>
+                                    <td>
+                                        <div class="d-flex gap-1 justify-content-end flex-wrap">
+                                            <a asp-area="Admin" asp-controller="AdminVideo" asp-action="SetFeatured"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-warning btn-sm"
+                                               title="Öne Çıkar"
+                                               onclick="return confirm('Bu videoyu öne çıkan yapmak istiyor musunuz?')">
+                                                <i class="bi bi-star"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="AdminVideo" asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="AdminVideo" asp-action="Delete"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-outline-danger btn-sm"
+                                               onclick="return confirm('Bu videoyu silmek istiyor musunuz?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="vid-cards-wrap p-3">
+                @foreach (var item in normalVideos.OrderBy(v => v.Order))
+                {
+                    <div class="vid-card">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <img src="@thumb(item)" style="width:80px;height:50px;object-fit:cover;border-radius:4px;" alt="" />
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-semibold text-truncate">@item.Title</div>
+                                <div class="text-muted small">@item.Tag &bull; @item.Duration</div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end pt-1 border-top flex-wrap">
+                            <a asp-area="Admin" asp-controller="AdminVideo" asp-action="SetFeatured"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-warning btn-sm"
+                               onclick="return confirm('Öne çıkan yapmak istiyor musunuz?')">
+                                <i class="bi bi-star"></i> Öne Çıkar
+                            </a>
+                            <a asp-area="Admin" asp-controller="AdminVideo" asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-pencil"></i> Düzenle
+                            </a>
+                            <a asp-area="Admin" asp-controller="AdminVideo" asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-danger btn-sm"
+                               onclick="return confirm('Silmek istiyor musunuz?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

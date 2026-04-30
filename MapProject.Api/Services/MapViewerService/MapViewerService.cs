@@ -9,7 +9,7 @@ namespace MapProject.Api.Services.MapViewerService
 {
     public class MapViewerService : IMapViewerService
     {
-        private string WebUiUrl = "https://localhost:3000/MapViewer/Viewer/";
+        private string WebUiUrl = "https://ajansreart.com/MapViewer/Viewer/";
         private readonly IMongoCollection<MapViewer> _collection;
         private readonly IMapper _mapper;
 
@@ -49,6 +49,16 @@ namespace MapProject.Api.Services.MapViewerService
         {
             var value = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
             return _mapper.Map<GetByIdMapViewerDto>(value);
+        }
+
+        public async Task<int> IncrementViewCountAsync(string id)
+        {
+            var update = Builders<MapViewer>.Update.Inc(x => x.ViewCount, 1);
+            var result = await _collection.FindOneAndUpdateAsync(
+                x => x.Id == id,
+                update,
+                new FindOneAndUpdateOptions<MapViewer> { ReturnDocument = ReturnDocument.After });
+            return result?.ViewCount ?? 0;
         }
 
         public async Task UpdateMapViewer(UpdateMapViewerDto dto)

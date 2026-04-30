@@ -62,6 +62,13 @@ namespace MapProject.Api.Controllers
             return Ok("Güncelleme İşlemi Başarılı");
         }
 
+        [HttpPost("{id}/view")]
+        public async Task<IActionResult> IncrementView(string id)
+        {
+            int newCount = await _service.IncrementViewCountAsync(id);
+            return Ok(newCount);
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteMapViewers(string id)
         {
